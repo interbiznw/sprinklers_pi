@@ -44,6 +44,14 @@ bool web::Init()
 #endif
 }
 
+#ifdef RELPATH
+const short WEB_LEN = 4;
+const char* WEB_PREFIX = "web/";
+#else
+const short WEB_LEN = 5;
+const char* WEB_PREFIX = "/web/";
+#endif
+
 static char sendbuf[512];
 
 #ifdef ARDUINO
@@ -102,15 +110,24 @@ static void ServeError(FILE * stream_file)
 
 static void JSONSchedules(const KVPairs & key_value_pairs, FILE * stream_file)
 {
+	const time_t local_now = nntpTimeServer.LocalNow();
 	ServeHeader(stream_file, 200, "OK", false, "text/plain");
 	int iNumSchedules = GetNumSchedules();
 	fprintf(stream_file, "{\n\"Table\" : [\n");
 	Schedule sched;
+    char buff[128];
 	for (int i = 0; i < iNumSchedules; i++)
 	{
 		LoadSchedule(i, &sched);
-		fprintf_P(stream_file, PSTR("%s\t{\"id\" : %d, \"name\" : \"%s\", \"e\" : \"%s\" }"), (i == 0) ? "" : ",\n", i, sched.name,
-				(sched.IsEnabled()) ? "on" : "off");
+        sched.NextRun(local_now, buff);
+		fprintf_P(stream_file, PSTR("%s\t{\"id\": %d, \"name\": \"%s\", \"e\": \"%s\", \"td\": %s, \"tm\": %s, \"next\": \"%s\"}"),
+                  (i == 0) ? "" : ",\n",
+                  i,
+                  sched.name,
+                  sched.IsEnabled() ? "on" : "off",
+                  GetRunSchedules() && sched.IsRunToday(local_now) ? "true" : "false",
+                  GetRunSchedules() && sched.IsRunTomorrow(local_now) ? "true" : "false",
+                  buff);
 	}
 	fprintf(stream_file, "\n]}");
 }
@@ -232,12 +249,13 @@ static void JSONwCheck(const KVPairs & key_value_pairs, FILE * stream_file)
 	GetApiKey(key);
 	char pws[12] = {0};
 	GetPWS(pws);
-	const Weather::ReturnVals vals = w.GetVals(GetWUIP(), key, GetZip(), pws, GetUsePWS());
+	const Weather::ReturnVals vals = w.GetVals(key, GetZip(), pws, GetUsePWS());
 	const int scale = w.GetScale(vals);
 
 	fprintf(stream_file, "{\n");
 	fprintf_P(stream_file, PSTR("\t\"valid\" : \"%s\",\n"), vals.valid ? "true" : "false");
 	fprintf_P(stream_file, PSTR("\t\"keynotfound\" : \"%s\",\n"), vals.keynotfound ? "true" : "false");
+	fprintf_P(stream_file, PSTR("\t\"resolvedIP\" : \"%s\",\n"), vals.resolvedIP);
 	fprintf_P(stream_file, PSTR("\t\"minhumidity\" : \"%d\",\n"), vals.minhumidity);
 	fprintf_P(stream_file, PSTR("\t\"maxhumidity\" : \"%d\",\n"), vals.maxhumidity);
 	fprintf_P(stream_file, PSTR("\t\"meantempi\" : \"%d\",\n"), vals.meantempi);
@@ -449,8 +467,9 @@ static bool ManualZone(const KVPairs & key_value_pairs)
 {
 	freeMemory();
 
-	// Turn off the current schedules.
-	SetRunSchedules(false);
+	// If you uncomment the following line it will
+    // turn off the current schedules when you use manual control.
+	//SetRunSchedules(false);
 
 	bool bOn = false;
 	int iZoneNum = -1;
@@ -913,8 +932,8 @@ void web::ProcessWebClients()
 				if (strlen(sPage) == 0)
 					strcpy(sPage, "index.htm");
 				// prepend path
-				memmove(sPage + 5, sPage, sizeof(sPage) - 5);
-				memcpy(sPage, "/web/", 5);
+				memmove(sPage + WEB_LEN, sPage, sizeof(sPage) - WEB_LEN);
+				memcpy(sPage, WEB_PREFIX, WEB_LEN);
 				sPage[sizeof(sPage)-1] = 0;
 				trace(F("Serving Page: %s\n"), sPage);
 				SdFile theFile;

@@ -5,8 +5,8 @@
 // Copyright (c) 2013 Richard Zimmerman
 //
 
-#ifndef _PORT_H_
-#define _PORT_H_
+#ifndef _SP_PORT_H_
+#define _SP_PORT_H_
 #include <stdio.h>
 #include <inttypes.h>
 #include <ctype.h>
@@ -16,11 +16,11 @@
 
 void trace(const char * fmt, ...);
 
-#ifndef max
-#define max(a,b) (((a) > (b)) ? (a) : (b))
+#ifndef spi_max
+#define spi_max(a,b) (((a) > (b)) ? (a) : (b))
 #endif
-#ifndef min
-#define min(a,b) (((a) < (b)) ? (a) : (b))
+#ifndef spi_min
+#define spi_min(a,b) (((a) < (b)) ? (a) : (b))
 #endif
 
 static inline void freeMemory()
@@ -154,6 +154,7 @@ public:
 	EthernetClient(int sock);
 	~EthernetClient();
 	int connect(IPAddress ip, uint16_t port);
+	int connect(const char* host, uint16_t port);
 	bool connected();
 	void stop();
 	int read(uint8_t *buf, size_t size);
@@ -163,7 +164,12 @@ public:
 	{
 		return m_sock;
 	}
+	char* GetIpAddress()
+	{
+		return m_ipAddress;
+	}
 private:
+	char* m_ipAddress;
 	int m_sock;
 	bool m_connected;
 	friend class EthernetServer;
@@ -197,4 +203,4 @@ private:
 	FILE * m_fid;
 };
 
-#endif /* PORT_H_ */
+#endif /* _SP_PORT_H_ */

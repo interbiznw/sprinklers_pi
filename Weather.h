@@ -10,6 +10,8 @@
 
 #include "port.h"
 
+#define NEUTRAL_HUMIDITY 30
+
 class Weather
 {
 public:
@@ -24,12 +26,15 @@ public:
 		short precipi;
 		short windmph;
 		short UV;
+		const char* resolvedIP;
 	};
 public:
 	Weather(void);
-	int GetScale(const IPAddress & ip, const char * key, uint32_t zip, const char * pws, bool usePws) const;
+	int GetScale(const char * key, uint32_t zip, const char * pws, bool usePws) const;
 	int GetScale(const ReturnVals & vals) const;
-	ReturnVals GetVals(const IPAddress & ip, const char * key, uint32_t zip, const char * pws, bool usePws) const;
+	ReturnVals GetVals(const char * key, uint32_t zip, const char * pws, bool usePws) const;
+private:
+	const char* m_wundergroundAPIHost;
 };
 
 #endif

@@ -224,12 +224,12 @@ static runStateClass::DurationAdjustments AdjustDurations(Schedule * sched)
 		GetApiKey(key);
 		char pws[12] = {0};
 		GetPWS(pws);
-		adj.wunderground = w.GetScale(GetWUIP(), key, GetZip(), pws, GetUsePWS());   // factor to adjust times by.  100 = 100% (i.e. no adjustment)
+		adj.wunderground = w.GetScale(key, GetZip(), pws, GetUsePWS());   // factor to adjust times by.  100 = 100% (i.e. no adjustment)
 	}
 	adj.seasonal = GetSeasonalAdjust();
 	long scale = ((long)adj.seasonal * (long)adj.wunderground) / 100;
 	for (uint8_t k = 0; k < NUM_ZONES; k++)
-		sched->zone_duration[k] = min(((long)sched->zone_duration[k] * scale + 50) / 100, 254);
+		sched->zone_duration[k] = spi_min(((long)sched->zone_duration[k] * scale + 50) / 100, 254);
 	return adj;
 }
 
