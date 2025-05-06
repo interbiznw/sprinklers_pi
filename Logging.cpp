@@ -142,13 +142,14 @@ bool Logging::LogZoneEvent(time_t start, int zone, int duration, int schedule, i
 	Schedule sched;
 	const char* schedName = "Invalid Schedule";
 
-	if (schedule >= 0 && schedule < MAX_SCHEDULES) {
-		LoadSchedule(schedule, &sched);
-		schedName = sched.name[0] ? sched.name : "Unnamed Schedule";
-		trace(F("Loaded Schedule name: %s\n"), schedName);
-	} else {
-		trace(F("Schedule index %d out of range.\n"), schedule);
-	}
+	if (schedule <= 0 || schedule > MAX_SCHEDULES) {
+    trace(F("Schedule index %d out of range.\n"), schedule);
+    strcpy(scheduleName, "Invalid Schedule");
+} else {
+    LoadSchedule(schedule - 1, &sched);
+    strncpy(scheduleName, sched.name, sizeof(sched.name));
+    trace(F("Loaded Schedule name: %s\n"), scheduleName);
+}
 
 	// Send to NTFY
 	char cmd[512];
