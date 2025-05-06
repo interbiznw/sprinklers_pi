@@ -25,7 +25,7 @@
 #define ADDR_DHCP				988 // NOT USED
 #define ADDR_WUIP				992
 #define ADDR_ZIP				996
-#define ADDR_APIKEY				1220
+#define ADDR_APIKEY				2050
 #define LEN_APIKEY 64
 #define ADDR_OTYPE				1008
 #define ADDR_WEB				1009
