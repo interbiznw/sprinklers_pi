@@ -333,32 +333,44 @@ bool SetSettings(const KVPairs & key_value_pairs)
 		}
 		else if (strcmp(key, "bias_temp") == 0)
 		{
-			uint16_t v = atoi(value);
-			trace("Writing bias_temp=%d to EEPROM\n", v);
-			// Save the temperature bias to EEPROM
-			EEPROM.write(1170, v & 0xFF);
-			EEPROM.write(1171, (v >> 8) & 0xFF);
+				if (value == NULL || strlen(value) == 0) {
+						trace("ERROR: bias_temp value missing or null\n");
+						return false;
+				}
+				uint16_t v = atoi(value);
+				trace("Writing bias_temp=%d to EEPROM\n", v);
+				EEPROM.write(1170, v & 0xFF);
+				EEPROM.write(1171, (v >> 8) & 0xFF);
 		}
 		else if (strcmp(key, "bias_humid") == 0)
 		{
-			uint16_t v = atoi(value);
-			trace("Writing bias_humid=%d to EEPROM\n", v);
-			// Save the humidity bias to EEPROM
-			EEPROM.write(1172, v & 0xFF);
-			EEPROM.write(1173, (v >> 8) & 0xFF);
+				if (value == NULL || strlen(value) == 0) {
+						trace("ERROR: bias_humid value missing or null\n");
+						return false;
+				}
+				uint16_t v = atoi(value);
+				trace("Writing bias_humid=%d to EEPROM\n", v);
+				EEPROM.write(1172, v & 0xFF);
+				EEPROM.write(1173, (v >> 8) & 0xFF);
 		}
 		else if (strcmp(key, "bias_rain") == 0)
 		{
-			uint16_t v = atoi(value);
-			trace("Writing bias_rain=%d to EEPROM\n", v);
-			// Save the rain bias to EEPROM
-			EEPROM.write(1174, v & 0xFF);
-			EEPROM.write(1175, (v >> 8) & 0xFF);
+				if (value == NULL || strlen(value) == 0) {
+						trace("ERROR: bias_rain value missing or null\n");
+						return false;
+				}
+				uint16_t v = atoi(value);
+				trace("Writing bias_rain=%d to EEPROM\n", v);
+				EEPROM.write(1174, v & 0xFF);
+				EEPROM.write(1175, (v >> 8) & 0xFF);
 		}
-		else {
-      // just ignore unknown settings
-      //DEBUG_PRINT("Skipping unknown key: %s\n", key);
-    }
+		else
+		{
+				trace("Unknown key encountered: %s\n", key);
+				// Either ignore or return false
+				// return false;
+
+		}
 
 	}
 	return true;
