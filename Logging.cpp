@@ -110,7 +110,7 @@ void Logging::Close()
 
 bool Logging::LogZoneEvent(time_t start, int zone, int duration, int schedule, int sadj, int wunderground)
 {
-	Weather::Settings settings = Weather::GetSettings();
+
 	char * zErrMsg = 0;
 	char sSQL[100];
 	snprintf(sSQL, sizeof(sSQL), "INSERT INTO zonelog VALUES(%ld, %d, %d, %d, %d, %d);", start, zone, duration, schedule, sadj, wunderground);
@@ -122,9 +122,10 @@ bool Logging::LogZoneEvent(time_t start, int zone, int duration, int schedule, i
 		return false;
 	}
 	char cmd[512];
-
+	trace(F("Logging Zone Event: zone %d, schedule %d, duration %d\n"), zone, schedule, duration);
 	FullZone z;
 	LoadZone(zone, &z);  // zone is the zone number you're logging
+	trace(F("Loaded Zone name: %s\n"), z.name);
 	const char* zoneName = z.name;
 	snprintf(cmd, sizeof(cmd),
 	"curl -H \"Authorization: Bearer tk_jjldqavvt53ik5zm5pg86c928olen\" "
