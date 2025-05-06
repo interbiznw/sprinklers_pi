@@ -346,6 +346,10 @@ bool SetSettings(const KVPairs & key_value_pairs)
 			EEPROM.write(1174, v & 0xFF);
 			EEPROM.write(1175, (v >> 8) & 0xFF);
 		}
+		else {
+      // just ignore unknown settings
+      DEBUG_PRINT("Skipping unknown key: %s\n", key);
+    }
 
 	}
 	return true;
