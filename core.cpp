@@ -292,8 +292,13 @@ void LoadSchedTimeEvents(uint8_t sched_num, bool bQuickSchedule)
 		const uint8_t iNumSchedules = GetNumSchedules();
 		if ((sched_num < 0) || (sched_num >= iNumSchedules))
 			return;
-		LoadSchedule(sched_num, &sched);
-		adj=AdjustDurations(&sched);
+			LoadSchedule(sched_num, &sched);
+			adj = AdjustDurations(&sched);
+			trace("Adding eventtttt for zone %d with duration %d\n", k+1, sched.zone_duration[k]);
+
+
+			// Save back the adjusted durations so the event system uses them
+			SaveSchedule(sched_num, &sched);
 	}
 	else
 		sched = quickSchedule;
