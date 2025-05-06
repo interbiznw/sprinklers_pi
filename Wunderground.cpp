@@ -85,12 +85,9 @@ Weather::ReturnVals Wunderground::InternalGetVals(const Weather::Settings & sett
 		if (obs.isMember("uvHigh")) ret.UV = static_cast<int16_t>(obs["uvHigh"].asFloat() * 10.0f);
 
 		// Load tuning parameters from EEPROM (stored as int16_t)
-		//ret.temp_bias = (int16_t)(EEPROM.read(1170) | (EEPROM.read(1171) << 8));
-		ret.temp_bias = 3;
-		//ret.humid_bias = (int16_t)(EEPROM.read(1172) | (EEPROM.read(1173) << 8));
-		ret.humid_bias = 5;
-		//ret.rain_bias = (int16_t)(EEPROM.read(1174) | (EEPROM.read(1175) << 8));
-		ret.rain_bias = 9;
+		ret.temp_bias = (int16_t)(EEPROM.read(1170) | (EEPROM.read(1171) << 8));
+		ret.humid_bias = (int16_t)(EEPROM.read(1172) | (EEPROM.read(1173) << 8));
+		ret.rain_bias = (int16_t)(EEPROM.read(1174) | (EEPROM.read(1175) << 8));
 
 
 	} catch (const std::exception& e) {
