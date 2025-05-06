@@ -160,7 +160,7 @@ bool Logging::LogZoneEvent(time_t start, int zone, int duration, int schedule, i
 		"-H \"Title: Zone %s ended\" "
 		"-d \"Zone %s (%d sec, Schedule %d: %s)\" "
 		"https://ntfy.interbiznw.dev/Irrigation",
-		zoneName, zoneName, duration, schedule + 1, schedName);  // schedule + 1 is to match user-facing numbering
+		zoneName, zoneName, duration, schedule + 1, scheduleName);  // schedule + 1 is to match user-facing numbering
 
 	system(cmd);
 
