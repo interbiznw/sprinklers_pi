@@ -71,7 +71,7 @@ Weather::ReturnVals Wunderground::InternalGetVals(const Weather::Settings & sett
 		if (obs.isMember("imperial")) {
 			const auto& imp = obs["imperial"];
 			if (imp.isMember("tempAvg")) ret.meantempi = imp["tempAvg"].asInt();
-			ret.meantempi = 88; // 🔧 Hardcoded for test
+			ret.meantempi = 95; // 🔧 Hardcoded for test
 			if (imp.isMember("precipTotal")) ret.precipi = imp["precipTotal"].asFloat() * 100.0f;
 			if (imp.isMember("windspeedAvg")) ret.windmph = imp["windspeedAvg"].asFloat() * 10.0f;
 		}
