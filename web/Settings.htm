@@ -131,7 +131,7 @@
         <input type="number" name="NTPoffset" id="NTPoffset" value="" min="-12" max="14"/>
       </div>
       <div id="webportdiv" data-role="fieldcontain">
-        <label for="zip">Web Port:</label>
+        <label for="webport">Web Port:</label>
         <input type="number" name="webport" id="webport" value="" min="0" max="32767" />
       </div>
       <div id="sadjdiv" data-role="fieldcontain">
@@ -151,10 +151,12 @@
           <label for="ot3">OpenSprinkler</label>
         </fieldset>
       </div>
-      <tr>
-        <td>Temperature Bias</td>
-        <td><input name="bias_temp" size="3" value="" /></td>
-      </tr>
+
+      <div id="biastempdiv" data-role="fieldcontain">
+        <label for="biastemp">Temperature Bias:</label>
+        <input type="number" name="bias_temp" id="bias_temp" size="3" value="" />
+      </div>
+
 
 
 
