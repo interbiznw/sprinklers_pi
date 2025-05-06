@@ -277,9 +277,7 @@ static runStateClass::DurationAdjustments AdjustDurations(Schedule * sched)
 	for (uint8_t k = 0; k < NUM_ZONES; k++) {
 		trace("Original duration for zone %d: %d\n", k+1, sched->zone_duration[k]);
 		//sched->zone_duration[k] = (uint8_t)spi_min(((long)sched->zone_duration[k] * scale + 50) / 100, 255);
-		uint16_t new_duration_sec = ((long)sched->zone_duration[k] * 60 * scale + 50) / 100;
-		sched->zone_duration[k] = new_duration_sec;  // store in seconds instead of minutes
-		//sched->zone_duration[k] = (uint8_t)spi_min(((long)sched->zone_duration[k] * scale) / 100, 255);
+		sched->zone_duration[k] = (uint8_t)spi_min(((long)sched->zone_duration[k] * scale) / 100, 255);
 		trace("Adjusted duration for zone %d: %d (scale: %ld)\n", k+1, sched->zone_duration[k], scale);
 	}
 
@@ -320,10 +318,8 @@ void LoadSchedTimeEvents(uint8_t sched_num, bool bQuickSchedule)
 				events[iNumEvents].time = start_time;
 				events[iNumEvents].command = 0x01; // Turn on a zone
 				events[iNumEvents].data[0] = k + 1; // Zone to turn on
-				//events[iNumEvents].data[1] = (start_time + sched.zone_duration[k]) >> 8;
-				//events[iNumEvents].data[2] = (start_time + sched.zone_duration[k]) & 0x00FF;
-				events[iNumEvents].data[1] = (start_time * 60 + sched.zone_duration[k]) >> 8;
-				events[iNumEvents].data[2] = (start_time * 60 + sched.zone_duration[k]) & 0xFF;
+				events[iNumEvents].data[1] = (start_time + sched.zone_duration[k]) >> 8;
+				events[iNumEvents].data[2] = (start_time + sched.zone_duration[k]) & 0x00FF;
 				trace("Adding event for zone %d with duration %d\n", k+1, sched.zone_duration[k]);
 				iNumEvents++;
 				start_time += sched.zone_duration[k];
