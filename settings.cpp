@@ -705,7 +705,9 @@ int GetNumEnabledZones()
 }
 
 int16_t GetTempBias() {
-	return (int16_t)(EEPROM.read(ADDR_TEMP_BIAS) | (EEPROM.read(ADDR_TEMP_BIAS + 1) << 8));
+	int16_t val = (int16_t)(EEPROM.read(ADDR_TEMP_BIAS) | (EEPROM.read(ADDR_TEMP_BIAS + 1) << 8));
+	trace("GetTempBias(): returning %d from EEPROM\n", val);
+	return val;
 }
 void SetTempBias(int16_t bias) {
 	trace("SetTempBias(): storing %d into EEPROM\n", bias);
@@ -714,8 +716,11 @@ void SetTempBias(int16_t bias) {
 }
 
 int16_t GetHumidityBias() {
-	return (int16_t)(EEPROM.read(ADDR_HUMIDITY_BIAS) | (EEPROM.read(ADDR_HUMIDITY_BIAS + 1) << 8));
+	int16_t val = (int16_t)(EEPROM.read(ADDR_HUMIDITY_BIAS) | (EEPROM.read(ADDR_HUMIDITY_BIAS + 1) << 8));
+	trace("GetHumidityBias(): returning %d from EEPROM\n", val);
+	return val;
 }
+
 void SetHumidityBias(int16_t bias) {
 	trace("SetHumidityBias(): storing %d into EEPROM\n", bias);
 	EEPROM.write(ADDR_HUMIDITY_BIAS, bias & 0xFF);
@@ -723,8 +728,11 @@ void SetHumidityBias(int16_t bias) {
 }
 
 int16_t GetRainBias() {
-	return (int16_t)(EEPROM.read(ADDR_RAIN_BIAS) | (EEPROM.read(ADDR_RAIN_BIAS + 1) << 8));
+	int16_t val = (int16_t)(EEPROM.read(ADDR_RAIN_BIAS) | (EEPROM.read(ADDR_RAIN_BIAS + 1) << 8));
+	trace("GetRainBias(): returning %d from EEPROM\n", val);
+	return val;
 }
+
 void SetRainBias(int16_t bias) {
 	trace("SetRainBias(): storing %d into EEPROM\n", bias);
 	EEPROM.write(ADDR_RAIN_BIAS, bias & 0xFF);
