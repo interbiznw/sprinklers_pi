@@ -34,7 +34,7 @@
           NV(data, 'ot');
           NV(data, 'webport');
           NV(data, 'sadj');
-          ////NV(data, 'bias_temp');
+          NV(data, 'bias_temp');
           ////NV(data, 'bias_humid');
           ////NV(data, 'bias_rain');
         }});
@@ -151,7 +151,10 @@
           <label for="ot3">OpenSprinkler</label>
         </fieldset>
       </div>
-
+      <tr>
+        <td>Temperature Bias</td>
+        <td><input name="bias_temp" size="3" value="" /></td>
+      </tr>
 
 
 
