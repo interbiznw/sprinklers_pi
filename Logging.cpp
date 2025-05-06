@@ -11,7 +11,7 @@
 #include <sqlite3.h>
 #include <string.h>
 #include <cstdlib>
-extern Settings settings;
+#include "Weather.h"  // <== Make sure this is at the top of Logging.cpp
 
 Logging::Logging()
 		: m_db(0)
