@@ -358,6 +358,7 @@ bool SetSettings(const KVPairs & key_value_pairs)
 		}
 
 		else if (strcmp(key, "bias_temp") == 0) {
+			trace("Matched key: bias_temp\n");
 			int16_t v = 1;
 			if (value != NULL && strlen(value) > 0) {
 					v = atoi(value);
@@ -369,6 +370,7 @@ bool SetSettings(const KVPairs & key_value_pairs)
 	}
 
 	else if (strcmp(key, "bias_humid") == 0) {
+			trace("Matched key: bias_humid\n");
 			int16_t v = 1;
 			if (value != NULL && strlen(value) > 0) {
 					v = atoi(value);
@@ -380,6 +382,7 @@ bool SetSettings(const KVPairs & key_value_pairs)
 	}
 
 	else if (strcmp(key, "bias_rain") == 0) {
+			trace("Matched key: bias_rain\n");
 			int16_t v = 1;
 			if (value != NULL && strlen(value) > 0) {
 					v = atoi(value);
