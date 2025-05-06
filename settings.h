@@ -39,9 +39,9 @@
 #define ADDR_LOC				1119
 #define LEN_LOC					50
 
-#define ADDR_TEMP_BIAS      1170
-#define ADDR_HUMIDITY_BIAS  1172
-#define ADDR_RAIN_BIAS      1174
+#define ADDR_TEMP_BIAS      1180
+#define ADDR_HUMIDITY_BIAS  1182
+#define ADDR_RAIN_BIAS      1184
 
 #define SCHEDULE_OFFSET 1200
 #define SCHEDULE_INDEX 60
