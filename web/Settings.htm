@@ -35,8 +35,8 @@
           NV(data, 'webport');
           NV(data, 'sadj');
           NV(data, 'bias_temp');
-          ////NV(data, 'bias_humid');
-          ////NV(data, 'bias_rain');
+          NV(data, 'bias_humid');
+          NV(data, 'bias_rain');
         }});
     });
 
@@ -154,12 +154,20 @@
 
 
 
+      <div id="bias_tempdiv" data-role="fieldcontain">
+        <label for="bias_temp">Temperature Bias (°C):</label>
+        <input type="number" name="bias_temp" id="bias_temp" value="" min="-128" max="127" />
+      </div>
 
-      <tr>
-        <td>Temperature Bias</td>
-        <td><input name="bias_temp" size="3" value="" /></td>
-      </tr>
+      <div id="bias_humiddiv" data-role="fieldcontain">
+        <label for="bias_humid">Humidity Bias (%):</label>
+        <input type="number" name="bias_humid" id="bias_humid" value="" min="-128" max="127" />
+      </div>
 
+      <div id="bias_raindiv" data-role="fieldcontain">
+        <label for="bias_rain">Rain Bias (mm):</label>
+        <input type="number" name="bias_rain" id="bias_rain" value="" min="-128" max="127" />
+      </div>
 
 
     </form>
