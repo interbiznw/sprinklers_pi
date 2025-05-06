@@ -27,6 +27,9 @@
 #define ADDR_ZIP				996
 #define ADDR_APIKEY				2050
 #define LEN_APIKEY 64
+#define ADDR_TEMP_BIAS      (ADDR_APIKEY + LEN_APIKEY)        // 2050 + 64 = 2114
+#define ADDR_HUMIDITY_BIAS  (ADDR_TEMP_BIAS + 2)              // 2114 + 2 = 2116
+#define ADDR_RAIN_BIAS      (ADDR_HUMIDITY_BIAS + 2)          // 2116 + 2 = 2118
 #define ADDR_OTYPE				1008
 #define ADDR_WEB				1009
 #define ADDR_SADJ				1011
@@ -39,9 +42,6 @@
 #define ADDR_LOC				1119
 #define LEN_LOC					50
 
-#define ADDR_TEMP_BIAS      1180
-#define ADDR_HUMIDITY_BIAS  2150
-#define ADDR_RAIN_BIAS      2250
 
 #define SCHEDULE_OFFSET 1200
 #define SCHEDULE_INDEX 60
