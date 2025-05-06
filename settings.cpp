@@ -279,7 +279,7 @@ bool SetSettings(const KVPairs & key_value_pairs)
 ////	}
 
 		// <<< ADD THIS printf >>>
-////    trace("SetSettings received key: %s, value: %s\n", key, value ? value : "NULL");
+    trace("SetSettings received key: %s, value: %s\n", key, value ? value : "NULL");
 		if (strcmp(key, "ip") == 0)
 		{
 			SetIP(decodeIP(value));
