@@ -1,6 +1,5 @@
-// Wunderground.cpp
-// Updated to support new Weather Company PWS API using libcurl
-// Author: Richard Zimmerman (Original), Modified by ChatGPT
+// Wunderground.cpp (Updated for IBM Weather Company API - Daily Summary)
+// Retrieves historical PWS data for weather-based irrigation adjustment
 
 #include "config.h"
 #ifdef WEATHER_WUNDERGROUND
@@ -8,79 +7,77 @@
 #include "Wunderground.h"
 #include "core.h"
 #include "port.h"
-#include <curl/curl.h>
-#include <jsoncpp/json/json.h>
+#include <string>
 #include <sstream>
+#include <curl/curl.h>
+#include <json/json.h>
 
 Wunderground::Wunderground(void)
 {
 	m_wundergroundAPIHost = "api.weather.com";
 }
 
-static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
+static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp)
+{
 	((std::string*)userp)->append((char*)contents, size * nmemb);
 	return size * nmemb;
 }
 
 Weather::ReturnVals Wunderground::InternalGetVals(const Weather::Settings & settings) const
 {
-	Weather::ReturnVals vals = {0};
-	CURL* curl;
-	CURLcode res;
+	Weather::ReturnVals ret = {0};
 	std::string readBuffer;
+	CURL* curl = curl_easy_init();
 
-	char url[512];
-	snprintf(url, sizeof(url),
-		"https://api.weather.com/v2/pws/observations/current?stationId=%s&format=json&units=e&apiKey=%s",
-		settings.pws, settings.key);
-
-	curl = curl_easy_init();
-	if (!curl) {
-		trace("curl_easy_init() failed\n");
-		return vals;
+	if (!curl)
+	{
+		trace("CURL init failed\n");
+		return ret;
 	}
 
-	curl_easy_setopt(curl, CURLOPT_URL, url);
+	std::stringstream url;
+	url << "https://" << m_wundergroundAPIHost
+		<< "/v2/pws/dailysummary/1day?stationId=" << settings.pws
+		<< "&format=json&units=e&apiKey=" << settings.key;
+
+	curl_easy_setopt(curl, CURLOPT_URL, url.str().c_str());
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
-	curl_easy_setopt(curl, CURLOPT_USERAGENT, "sprinklerPi");
+	curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
 
-	res = curl_easy_perform(curl);
+	CURLcode res = curl_easy_perform(curl);
 	if (res != CURLE_OK) {
-		trace("CURL error: %s\n", curl_easy_strerror(res));
+		trace("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
 		curl_easy_cleanup(curl);
-		return vals;
+		return ret;
 	}
-
 	curl_easy_cleanup(curl);
 
-	Json::Value root;
 	Json::CharReaderBuilder builder;
+	Json::Value json;
 	std::string errs;
 	std::istringstream s(readBuffer);
-
-	if (!Json::parseFromStream(builder, s, &root, &errs)) {
+	if (!Json::parseFromStream(builder, s, &json, &errs)) {
 		trace("JSON parse error: %s\n", errs.c_str());
-		return vals;
+		return ret;
 	}
 
-	const auto& obs = root["observations"][0];
-	if (!obs.isObject()) {
-		trace("No observation data in response\n");
-		return vals;
+	try {
+		const Json::Value& obs = json["observations"][0];
+		ret.valid = true;
+		ret.keynotfound = false;
+		ret.meantempi = obs["imperial"]["tempAvg"].asInt();
+		ret.minhumidity = obs["humidityMin"].asInt();
+		ret.maxhumidity = obs["humidityMax"].asInt();
+		ret.precipi = obs["imperial"]["precipTotal"].asFloat() * 100.0f;
+		ret.windmph = obs["imperial"]["windSpeedAvg"].asFloat() * 10.0f;
+	} catch (const std::exception& e) {
+		trace("Error extracting fields: %s\n", e.what());
+		ret.valid = false;
 	}
 
-	vals.valid = true;
-	vals.keynotfound = false;
-
-	vals.maxhumidity = obs["humidity"].asInt();
-	vals.minhumidity = vals.maxhumidity;
-
-	vals.meantempi = obs["imperial"]["temp"].asInt();
-	double precip = obs["imperial"]["precipTotal"].asDouble();
-	vals.precipi = vals.precip_today = static_cast<int>(precip * 100.0);
-
-	return vals;
+	ret.resolvedIP = "(null)";
+	return ret;
 }
 
 #endif
