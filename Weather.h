@@ -18,7 +18,6 @@
 #define UV_FACTOR 10.0
 
 #define MM_TO_IN 25.4
-#define LEN_APIKEY 65
 
 class Weather
 {

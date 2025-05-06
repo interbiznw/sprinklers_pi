@@ -38,6 +38,7 @@
 #define ADDR_LOC				1119
 #define LEN_LOC					50
 #define ADDR_					1169
+#define LEN_APIKEY 64
 
 #define SCHEDULE_OFFSET 1200
 #define SCHEDULE_INDEX 60

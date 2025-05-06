@@ -81,7 +81,7 @@ static IPAddress decodeIP(const char * value)
 //************************************
 // Method:    SetSchedule
 // FullName:  SetSchedule
-// Access:    public 
+// Access:    public
 // Returns:   bool
 // Qualifier:
 // Parameter: const KVPairs & key_value_pairs
@@ -507,10 +507,12 @@ void SetLoc(const char * val)
 
 void GetApiKey(char * key)
 {
-	sprintf(key, "%02x%02x%02x%02x%02x%02x%02x%02x", EEPROM.read(ADDR_APIKEY), EEPROM.read(ADDR_APIKEY + 1), EEPROM.read(ADDR_APIKEY + 2),
-			EEPROM.read(ADDR_APIKEY + 3), EEPROM.read(ADDR_APIKEY + 4), EEPROM.read(ADDR_APIKEY + 5), EEPROM.read(ADDR_APIKEY + 6),
-			EEPROM.read(ADDR_APIKEY + 7));
+    for (int i = 0; i < LEN_APIKEY; i++) {
+        key[i] = EEPROM.read(ADDR_APIKEY + i);
+    }
+    key[LEN_APIKEY] = '\0';
 }
+
 
 static uint8_t toHex(char val)
 {
@@ -526,18 +528,13 @@ static uint8_t toHex(char val)
 
 void SetApiKey(const char * key)
 {
-	if (strlen(key) != 16)
-	{
-		for (int i = 0; i < 8; i++)
-			EEPROM.write(ADDR_APIKEY + i, 0);
-	}
-	else
-	{
-		for (int i = 0; i < 8; i++)
-		{
-			EEPROM.write(ADDR_APIKEY + i, (toHex(key[i * 2]) << 4) | toHex(key[i * 2 + 1]));
-		}
-	}
+    for (int i = 0; i < LEN_APIKEY; i++) {
+        if (key[i] == '\0') {
+            EEPROM.write(ADDR_APIKEY + i, 0);
+            break;
+        }
+        EEPROM.write(ADDR_APIKEY + i, key[i]);
+    }
 }
 
 bool GetRunSchedules()
