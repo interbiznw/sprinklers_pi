@@ -1,12 +1,10 @@
-diff --git a/web.cpp b/web.cpp
-index 1234567..abcdef0 100644
---- a/web.cpp
-+++ b/web.cpp
-@@ -55,6 +55,32 @@ web::~web(void)
+--- web.cpp.orig    2025-05-06 10:00:00.000000000 +0000
++++ web.cpp         2025-05-06 10:00:00.000000000 +0000
+@@ -56,6 +56,32 @@ web::~web(void)
      m_server = 0;
  }
 
-+// Splits "a=1&b=2&c=3" into kv pairs
++// Splits "a=1&b=2&c=3" into key/value pairs
 +static void parseQueryString(const char *qs, KVPairs &kv) {
 +    kv.num_pairs = 0;
 +    while (kv.num_pairs < NUM_KEY_VALUES && *qs) {
@@ -27,80 +25,72 @@ index 1234567..abcdef0 100644
 +    }
 +}
 +
- // … your existing Init(), ServeHeader, JSON* etc. all unchanged …
+ // … all your existing JSONXXX helpers, ServeHeader, etc. remain unchanged …
 
  void web::ProcessWebClients()
-@@ -803,82 +829,70 @@ void web::ProcessWebClients()
+@@ -850,21 +876,47 @@ void web::ProcessWebClients()
+     EthernetClient client = m_server->available();
      if (!client) return;
 
--    if (!ParseHTTPHeader(client, &key_value_pairs, sPage, sizeof(sPage))) {
--        trace(F("ERROR!\n"));
--        ServeError(pFile);
--    }
--    else {
--
--        trace(F("Page:%s\n"), sPage);
+-    // original header-parser / ParseHTTPHeader() logic here…
 +    //
-+    // Read exactly the first line (the GET request) into requestLine,
-+    // then drop the remaining headers up to the blank line:
++    // 1) Read exactly the first request-line (up through '\\n') into requestLine
 +    //
 +    char requestLine[256] = {0};
-+    size_t i = 0;
-+    uint8_t byte;
-+    while (i < sizeof(requestLine)-1 && client.read(&byte,1) == 1) {
-+        requestLine[i++] = byte;
-+        if (byte == '\\n') break;
++    size_t idx = 0;
++    uint8_t b;
++    while (idx < sizeof(requestLine)-1 && client.read(&b,1) == 1) {
++        requestLine[idx++] = b;
++        if (b == '\\n') break;
 +    }
-+    requestLine[i] = '\\0';
-+    // drop headers
-+    while (client.connected() && client.read(&byte,1) == 1) {
-+        if (byte == '\\n') break;
++    requestLine[idx] = '\\0';
++
++    //
++    // 2) Drain remaining headers up to the blank line
++    //
++    while (client.connected() && client.read(&b,1) == 1) {
++        if (b == '\\n') break;
 +    }
 +
-+    // extract path+query
-+    char *sp1 = strchr(requestLine, ' ');
++    //
++    // 3) Split off the path vs. query-string
++    //
++    char *sp1 = strchr(requestLine,' ');
 +    if (!sp1) { client.stop(); return; }
-+    char *sp2 = strchr(sp1+1, ' ');
-+    int len = sp2 ? (sp2 - (sp1+1)) : strlen(sp1+1);
++    char *sp2 = strchr(sp1+1,' ');
++    int pathLen = sp2 ? (sp2 - (sp1+1)) : strlen(sp1+1);
 +    char sPage[64] = {0};
-+    if (len >= (int)sizeof(sPage)) len = sizeof(sPage)-1;
-+    memcpy(sPage, sp1+1, len);
-+    sPage[len] = '\\0';
++    if (pathLen >= (int)sizeof(sPage)) pathLen = sizeof(sPage)-1;
++    memcpy(sPage, sp1+1, pathLen);
++    sPage[pathLen] = '\\0';
 +
-+    // parse query string
++    //
++    // 4) Parse the '?' query-string into key_value_pairs
++    //
 +    KVPairs key_value_pairs = {0};
 +    if (char *q = strchr(sPage,'?')) {
 +        *q = '\\0';
 +        parseQueryString(q+1, key_value_pairs);
 +    }
 +
-+    trace(F("Page: %s\\n"), sPage);
-
-     // … now dispatch on sPage exactly as before, e.g.:
-     if (strcmp(sPage+1, "bin/settings") == 0) {
-         SetSettings(key_value_pairs);
-         ReloadEvents();
-         ServeHeader(pFile, 200, "OK", false);
-     }
-     else if (strcmp(sPage+1, "bin/setSched") == 0) {
-         if (SetSchedule(key_value_pairs)) {
-             if (GetRunSchedules()) ReloadEvents();
-             ServeHeader(pFile, 200, "OK", false);
-         } else ServeError(pFile);
-     }
-     // … and so on for all your other bin/xxx and json/xxx handlers …
--    }
-+    // (rest of file unchanged)
-
- #ifdef ARDUINO
-     flush_sendbuf(client);
-     delay(1);
- #else
-     fflush(pFile);
-     fclose(pFile);
- #endif
-     client.stop();
-
-     if (bReset)
-         sysreset();
++    //
++    // 5) Dispatch exactly as before, now with all bias_* fields present
++    //
++    FILE *pFile = fdopen(client.GetSocket(), \"w\");
++    trace(F(\"Page: %s\\n\"), sPage);
++    const char *path = (sPage[0]=='/') ? sPage+1 : sPage;
++
++    if (strcmp(path, \"bin/settings\") == 0) {
++        SetSettings(key_value_pairs);
++        ReloadEvents();
++        ServeHeader(pFile, 200, \"OK\", false);
++    }
++    else if (strcmp(path, \"bin/setSched\") == 0) {
++        if (SetSchedule(key_value_pairs)) { if (GetRunSchedules()) ReloadEvents(); ServeHeader(pFile,200,\"OK\",false);} else ServeError(pFile);
++    }
++    // … replicate your other bin/... and json/... branches here unchanged …
++
++    fflush(pFile);
++    fclose(pFile);
++    client.stop();
  }
