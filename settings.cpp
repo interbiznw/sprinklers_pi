@@ -511,8 +511,10 @@ void GetApiKey(char * key)
         key[i] = EEPROM.read(ADDR_APIKEY + i);
     }
     key[LEN_APIKEY] = '\0';
-}
 
+    // Debug output
+    trace(F("DEBUG: GetApiKey returned: %s\n"), key);
+}
 
 static uint8_t toHex(char val)
 {
