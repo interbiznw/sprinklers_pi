@@ -47,7 +47,7 @@ bool web::Init()
 	uint16_t port = GetWebPort();
 	if ((port > 65000) || (port < 80))
 		port = 80;
-	trace(F("Listening on Port %u\n"), port), 
+	trace(F("Listening on Port %u\n"), port),
 	m_server = new EthernetServer(port);
 #ifdef ARDUINO
 	m_server->begin();
@@ -244,7 +244,9 @@ static void JSONSettings(const KVPairs & key_value_pairs, FILE * stream_file)
 	ip = GetWUIP();
 	fprintf_P(stream_file, PSTR("\t\"wuip\" : \"%d.%d.%d.%d\",\n"), ip[0], ip[1], ip[2], ip[3]);
 #if defined(WEATHER_WUNDERGROUND)
-	fprintf_P(stream_file, PSTR("\t\"apikey\" : \"%s\",\n"), settings.key);
+	char fullApiKey[LEN_APIKEY + 1];
+	GetApiKey(fullApiKey);
+	fprintf_P(stream_file, PSTR("\t\"apikey\" : \"%s\",\n"), fullApiKey);
 	fprintf_P(stream_file, PSTR("\t\"wutype\" : \"%s\",\n"), settings.usePws ? "pws" : "zip");
 	fprintf_P(stream_file, PSTR("\t\"zip\" : \"%ld\",\n"), (long) settings.zip);
 	fprintf_P(stream_file, PSTR("\t\"pws\" : \"%s\",\n"), settings.pws);
@@ -550,7 +552,7 @@ static bool ChatterZone(const KVPairs & key_value_pairs)
     // turn off the current schedules when you use manual control.
 	SetRunSchedules(false);
 #endif
-	
+
 	int iZoneNum = -1;
 
 	// Iterate through the kv pairs and update the appropriate structure values.
@@ -640,7 +642,7 @@ static inline char hex2int(const char ch)
 		return 0;
 }
 
-//  Pass in a connected client, and this function will parse the HTTP header and return the requested page 
+//  Pass in a connected client, and this function will parse the HTTP header and return the requested page
 //   and a KV pairs structure for the variable assignments.
 static bool ParseHTTPHeader(EthernetClient & client, KVPairs * key_value_pairs, char * sPage, int iPageSize)
 {
