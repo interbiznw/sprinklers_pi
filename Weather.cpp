@@ -38,7 +38,6 @@ int16_t Weather::GetScale(const Weather::Settings & settings) const
 }
 
 int16_t Weather::GetScale(const ReturnVals & vals) const
-int Weather::GetScale(const ReturnVals & vals) const
 {
 	if (!vals.valid)
 		return 100;
