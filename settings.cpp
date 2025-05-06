@@ -352,6 +352,7 @@ bool SetSettings(const KVPairs & key_value_pairs)
 		else {
       // just ignore unknown settings
       //DEBUG_PRINT("Skipping unknown key: %s\n", key);
+			//printf("SetSettings: skipping unknown key \"%s\"\n", key)
     }
 
 	}
