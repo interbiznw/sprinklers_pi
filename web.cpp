@@ -7,7 +7,14 @@
 #include "web.h"
 #include "settings.h"
 #ifdef ARDUINO
+#include <avr/eeprom.h> // Include for eeprom_read_word
 #include "nntp.h"
+#else
+#include "fakeeeprom.h"
+#endif
+
+#ifndef ARDUINO
+std::map<uint16_t, uint16_t> fakeEEPROM;
 #endif
 
 #if defined(WEATHER_WUNDERGROUND)
@@ -29,7 +36,7 @@
 #include "Event.h"
 #include <unistd.h>
 #include "core.h"
-#include <avr/eeprom.h> // Include for eeprom_read_word
+
 
 #define ADDR_TEMP_BIAS 1170
 #define ADDR_HUMIDITY_BIAS 1172
