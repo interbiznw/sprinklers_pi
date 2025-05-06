@@ -252,5 +252,15 @@ int GetNumEnabledZones();
 // For storing info related to the Quick Schedule
 extern Schedule quickSchedule;
 
+
+#ifndef EEPROM_UTILS_H
+#define EEPROM_UTILS_H
+
+uint16_t eeprom_read_word(uint16_t* address);
+void eeprom_write_word(uint16_t* address, uint16_t value);
+
+#endif
+
+
 #endif
 

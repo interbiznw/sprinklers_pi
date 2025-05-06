@@ -667,6 +667,21 @@ void SetRainBias(int16_t bias) {
 	eeprom_write_word((uint16_t*)ADDR_RAIN_BIAS, bias);
 }
 
+uint16_t eeprom_read_word(uint16_t* address) {
+	uint16_t addr = (uint16_t)address;
+	uint16_t val = 0;
+	val |= EEPROM.read(addr);
+	val |= EEPROM.read(addr + 1) << 8;
+	return val;
+}
+
+void eeprom_write_word(uint16_t* address, uint16_t value) {
+	uint16_t addr = (uint16_t)address;
+	EEPROM.write(addr, value & 0xFF);
+	EEPROM.write(addr + 1, value >> 8);
+}
+
+
 
 Schedule quickSchedule;
 
