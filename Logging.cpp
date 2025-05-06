@@ -11,6 +11,7 @@
 #include <sqlite3.h>
 #include <string.h>
 #include <cstdlib>
+extern Settings settings;
 
 Logging::Logging()
 		: m_db(0)
@@ -120,13 +121,15 @@ bool Logging::LogZoneEvent(time_t start, int zone, int duration, int schedule, i
 		return false;
 	}
 	char cmd[512];
+	const char* zoneName = settings.m_zone[zone].name;
 	snprintf(cmd, sizeof(cmd),
-	    "curl -H \"Authorization: Bearer tk_jjldqavvt53ik5zm5pg86c928olen\" "
-	    "-H \"Title: Zone Ended\" "
-	    "-d \"Zone %d finished watering (%d sec, Schedule %d)\" "
-	    "https://ntfy.interbiznw.dev/Irrigation &",
-	    zone, duration, schedule);
+	"curl -H \"Authorization: Bearer %s\" "
+	"-H \"Title: %s ended\" "
+	"-d \"Zone %s (%d sec, Schedule %d)\" "
+	"\"https://ntfy.example.com/yourtopic\"",
+	tk_jjldqavvt53ik5zm5pg86c928olen, zoneName, zoneName, duration, schedule);
 	system(cmd);
+
 
 
 

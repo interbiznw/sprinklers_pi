@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="en">
-  
+
   <head>
     <title>Logs - Sprinklers Pi</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,7 +10,7 @@
     <script src="jquery/jquery-1.9.1.min.js" type="text/javascript"></script>
     <script src="jquery/jquery.mobile-1.4.5.min.js" type="text/javascript"></script>
   </head>
-  
+
   <body>
     <!-- Home -->
     <div data-role="page" id="logs">
@@ -47,10 +47,10 @@
 
         function onLogTypeChange() {
           if ($("input:radio[name='log_type']:checked").val() == 'table') {
-            $('#graphpane').css('display', 'none'); 
+            $('#graphpane').css('display', 'none');
             $('#tablepane').css('display', 'block');
           } else {
-            $('#graphpane').css('display', 'block'); 
+            $('#graphpane').css('display', 'block');
             $('#tablepane').css('display', 'none');
           }
           doRefresh();
@@ -87,7 +87,7 @@
 	    else if (grouping=='d')
 	      $.plot($('#placeholder'), pData, {
 		yaxis: {min: 0 },
-		xaxis: { tickDecimals: 0, min: -0.4, max: 6.4, 
+		xaxis: { tickDecimals: 0, min: -0.4, max: 6.4,
 		        tickFormatter: function(v) { var dow=["Sun","Mon","Tue","Wed","Thr","Fri","Sat"]; return dow[v]; } }
 	      });
 	    else if (grouping=='m')
@@ -105,7 +105,7 @@
 		xaxis: { mode: "time", min:minval, max:maxval.getTime()}
 	      });
 	    }
-	    
+
 	  //}
         }
         function dateChange(e) {
@@ -117,7 +117,7 @@
             }
           }
         }
-        
+
         function pad(n, width, z) {
           z = z || '0';
           n = n + '';
@@ -133,7 +133,7 @@
           else
             return "<td bgcolor='#D0FFF0'>" + val + "</td>";
         }
-        
+
         function tableChange(data) {
           var list = $('#tablepane');
           list.empty();
@@ -144,7 +144,7 @@
             for (var i=0; i<data.logs.length; i++) {
               tbl_html += "<div data-role='collapsible' data-theme='a' data-content-theme='a' data-inset='true' data-collapsed='true'>" +
                   "<h2><div class='ui-btn ui-btn-corner-all custom-count-pos'>" + data.logs[i].entries.length +
-                  ((data.logs[i].entries.length > 1)?" entries":" entry") + "</div>" + zonestorage[data.logs[i].zone-1].name + 
+                  ((data.logs[i].entries.length > 1)?" entries":" entry") + "</div>" + zonestorage[data.logs[i].zone-1].name +
                   "</h2><table><thead><tr><th data-priority='1'>Time</th><th data-priority='2'>Runtime</th><th data-priority='3'>Sched</th>" +
                   "<th data-priority='4'>SAdj</th><th data-priority='5'>WUnd</th></tr></thead><tbody>";
               for (var j=0; j<data.logs[i].entries.length; j++) {
@@ -169,7 +169,7 @@
             list.html(tbl_html).trigger("create");
           }
         }
-        
+
         var plotdata = [];
         function doRefresh() {
           if ($("input:radio[name='log_type']:checked").val() == 'graph') {
@@ -189,7 +189,7 @@
           }
         }
       </script>
-      <div data-theme="a" data-role="header"> 
+      <div data-theme="a" data-role="header">
         <a data-role="button" data-direction="reverse" data-rel="back" href="#page1" data-icon="back" data-iconpos="left" class="ui-btn-left">Back</a>
         <a href="javascript:doRefresh();" data-icon="refresh">Refresh</a>
         <h3>Logs</h3>
@@ -230,7 +230,7 @@
         </div>
       </div>
       <div data-role="footer" class="footer-docs" data-theme="a">
-          <p>Powered by <a href="https://github.com/rszimm/sprinklers_pi/wiki">Sprinklers Pi</a> <span id="version"></span></p>
+          <p>Powered by <a href="https://github.com/interbiznw/sprinklers_pi/wiki">Sprinklers Pi</a> <span id="version"></span></p>
       </div>
     </div>
   </body>

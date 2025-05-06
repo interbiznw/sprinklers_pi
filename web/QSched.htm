@@ -23,7 +23,7 @@
               else
                 $('#schedsel').append($('<option>', { value: data.Table[i].id }).text(data.Table[i].name+' (disabled)'));
             }
-            $('#schedsel').append($('<option>', { value: "-1" }).text("Custom")).val(-1).selectmenu('refresh'); 
+            $('#schedsel').append($('<option>', { value: "-1" }).text("Custom")).val(-1).selectmenu('refresh');
             onSelChange();
             $.getJSON("json/zones", function (data) {
               $('#qzones').empty();
@@ -35,7 +35,7 @@
             });
           }});
         });
-        
+
         function onSelChange() {
           if ($('#schedsel').val() == "-1")
             $('#qzones').css('display', 'block');
@@ -83,7 +83,7 @@
       </div>
       <!-- /content -->
       <div data-role="footer" class="footer-docs" data-theme="a">
-          <p>Powered by <a href="https://github.com/rszimm/sprinklers_pi/wiki">Sprinklers Pi</a> <span id="version"></span></p>
+          <p>Powered by <a href="https://github.com/interbiznw/sprinklers_pi/wiki">Sprinklers Pi</a> <span id="version"></span></p>
       </div>
     </div>
     <!-- /page -->
