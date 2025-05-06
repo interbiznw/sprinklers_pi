@@ -1,6 +1,8 @@
---- web.cpp.orig    2025-05-06 10:00:00.000000000 +0000
-+++ web.cpp         2025-05-06 10:00:00.000000000 +0000
-@@ -56,6 +56,32 @@ web::~web(void)
+diff --git a/web.cpp b/web.cpp
+index abcdef0..1234567 100644
+--- a/web.cpp
++++ b/web.cpp
+@@ -60,6 +60,24 @@ web::~web(void)
      m_server = 0;
  }
 
@@ -14,9 +16,9 @@
 +        strncpy(kv.keys[kv.num_pairs], qs, keylen);
 +        kv.keys[kv.num_pairs][keylen] = '\0';
 +
-+        const char *amp = strchr(eq + 1, '&');
-+        int vallen = amp ? (amp - (eq + 1)) : strlen(eq + 1);
-+        strncpy(kv.values[kv.num_pairs], eq + 1, vallen);
++        const char *amp = strchr(eq+1, '&');
++        int vallen = amp ? (amp - (eq+1)) : strlen(eq+1);
++        strncpy(kv.values[kv.num_pairs], eq+1, vallen);
 +        kv.values[kv.num_pairs][vallen] = '\0';
 +
 +        kv.num_pairs++;
@@ -25,72 +27,65 @@
 +    }
 +}
 +
- // … all your existing JSONXXX helpers, ServeHeader, etc. remain unchanged …
+ // … all your existing JSONXXX, ServeHeader, etc. stay exactly as-is …
 
- void web::ProcessWebClients()
-@@ -850,21 +876,47 @@ void web::ProcessWebClients()
+@@ -852,14 +870,41 @@ void web::ProcessWebClients()
      EthernetClient client = m_server->available();
      if (!client) return;
 
--    // original header-parser / ParseHTTPHeader() logic here…
+-    if (!ParseHTTPHeader(client, &key_value_pairs, sPage, sizeof(sPage))) {
+-        trace(F("ERROR!\n"));
+-        ServeError(pFile);
+-    } else {
+-        trace(F("Page:%s\n"), sPage);
 +    //
-+    // 1) Read exactly the first request-line (up through '\\n') into requestLine
++    // 1) Read just the first request‐line (up through '\\n')
 +    //
 +    char requestLine[256] = {0};
 +    size_t idx = 0;
 +    uint8_t b;
 +    while (idx < sizeof(requestLine)-1 && client.read(&b,1) == 1) {
 +        requestLine[idx++] = b;
-+        if (b == '\\n') break;
++        if (b == '\n') break;
 +    }
-+    requestLine[idx] = '\\0';
++    requestLine[idx] = '\0';
 +
 +    //
-+    // 2) Drain remaining headers up to the blank line
++    // 2) Drain remaining headers up to a blank line
 +    //
 +    while (client.connected() && client.read(&b,1) == 1) {
-+        if (b == '\\n') break;
++        if (b == '\n') break;
 +    }
 +
 +    //
-+    // 3) Split off the path vs. query-string
++    // 3) Split path vs. query string
 +    //
-+    char *sp1 = strchr(requestLine,' ');
++    char *sp1 = strchr(requestLine, ' ');
 +    if (!sp1) { client.stop(); return; }
-+    char *sp2 = strchr(sp1+1,' ');
++    char *sp2 = strchr(sp1+1, ' ');
 +    int pathLen = sp2 ? (sp2 - (sp1+1)) : strlen(sp1+1);
 +    char sPage[64] = {0};
 +    if (pathLen >= (int)sizeof(sPage)) pathLen = sizeof(sPage)-1;
 +    memcpy(sPage, sp1+1, pathLen);
-+    sPage[pathLen] = '\\0';
++    sPage[pathLen] = '\0';
 +
 +    //
 +    // 4) Parse the '?' query-string into key_value_pairs
 +    //
 +    KVPairs key_value_pairs = {0};
-+    if (char *q = strchr(sPage,'?')) {
-+        *q = '\\0';
++    if (char *q = strchr(sPage, '?')) {
++        *q = '\0';
 +        parseQueryString(q+1, key_value_pairs);
 +    }
 +
-+    //
-+    // 5) Dispatch exactly as before, now with all bias_* fields present
-+    //
-+    FILE *pFile = fdopen(client.GetSocket(), \"w\");
-+    trace(F(\"Page: %s\\n\"), sPage);
-+    const char *path = (sPage[0]=='/') ? sPage+1 : sPage;
++    trace(F("Page: %s\n"), sPage);
 +
-+    if (strcmp(path, \"bin/settings\") == 0) {
-+        SetSettings(key_value_pairs);
-+        ReloadEvents();
-+        ServeHeader(pFile, 200, \"OK\", false);
-+    }
-+    else if (strcmp(path, \"bin/setSched\") == 0) {
-+        if (SetSchedule(key_value_pairs)) { if (GetRunSchedules()) ReloadEvents(); ServeHeader(pFile,200,\"OK\",false);} else ServeError(pFile);
-+    }
-+    // … replicate your other bin/... and json/... branches here unchanged …
++    // 5) Now dispatch exactly as you did before, but your bias_temp, bias_humid
++    //    and bias_rain will all be present in key_value_pairs.
 +
-+    fflush(pFile);
-+    fclose(pFile);
-+    client.stop();
+     // … rest of your bin/... and json/... branches unchanged …
++
+     fflush(pFile);
+     fclose(pFile);
+     client.stop();
  }
