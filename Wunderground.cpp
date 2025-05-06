@@ -77,15 +77,16 @@ Weather::ReturnVals Wunderground::InternalGetVals(const Weather::Settings & sett
 
 		if (obs.isMember("humidityLow")) ret.minhumidity = obs["humidityLow"].asInt();
 		if (obs.isMember("humidityHigh")) ret.maxhumidity = obs["humidityHigh"].asInt();
+		if (obs.isMember("uvHigh")) ret.uv = static_cast<int16_t>(obs["uvHigh"].asFloat() * 10.0f);
 
 	} catch (const std::exception& e) {
 		trace("Error extracting fields: %s\n", e.what());
 		ret.valid = false;
 	}
 
-	trace("Parsed WU: Temp=%d, MinHum=%d, MaxHum=%d, Precip=%.2f, Wind=%.2f\n",
+	trace("Parsed WU: Temp=%d, MinHum=%d, MaxHum=%d, Precip=%.2f, Wind=%.2f, UV=%.1f\n",
 		ret.meantempi, ret.minhumidity, ret.maxhumidity,
-		ret.precipi / 100.0f, ret.windmph / 10.0f);
+		ret.precipi / 100.0f, ret.windmph / 10.0f, ret.uv / 10.0f);
 
 	char* ip;
 	curl_easy_getinfo(curl, CURLINFO_PRIMARY_IP, &ip);
