@@ -138,17 +138,19 @@ bool Logging::LogZoneEvent(time_t start, int zone, int duration, int schedule, i
 		trace(F("Zone index %d out of range. Using fallback name.\n"), zone);
 	}
 
-	// Load Schedule name
-	const char* schedName = "Unnamed Schedule";
-	if (schedule >= 0 && schedule < MAX_SCHEDULES) {
-		Schedule s;
-		LoadSchedule(schedule, &s);
-		schedName = s.name;
+	// Get schedule name
+	Schedule sched;
+	const char* schedName;
+	if (schedule >= 0 && schedule < GetNumSchedules()) {
+		LoadSchedule(schedule, &sched);
+		schedName = sched.name[0] ? sched.name : "Unnamed Schedule";
 		trace(F("Loaded Schedule name: %s\n"), schedName);
 	} else {
-		trace(F("Schedule index %d out of range. Using fallback name.\n"), schedule);
+		schedName = "Invalid Schedule";
+		trace(F("Schedule index %d out of range.\n"), schedule);
 	}
 
+	// Send to NTFY
 	char cmd[512];
 	snprintf(cmd, sizeof(cmd),
 		"curl -H \"Authorization: Bearer tk_jjldqavvt53ik5zm5pg86c928olen\" "
