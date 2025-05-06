@@ -255,6 +255,9 @@ static void JSONSettings(const KVPairs & key_value_pairs, FILE * stream_file)
 	fprintf_P(stream_file, PSTR("\t\"wutype\" : \"%s\",\n"), settings.usePws ? "pws" : "zip");
 	fprintf_P(stream_file, PSTR("\t\"zip\" : \"%ld\",\n"), (long) settings.zip);
 	fprintf_P(stream_file, PSTR("\t\"pws\" : \"%s\",\n"), settings.pws);
+	fprintf_P(stream_file, PSTR("\t\"bias_temp\" : \"%d\",\n"), GetTempBias());
+	fprintf_P(stream_file, PSTR("\t\"bias_humid\" : \"%d\",\n"), GetHumidityBias());
+	fprintf_P(stream_file, PSTR("\t\"bias_rain\" : \"%d\",\n"), GetRainBias());
 #endif
 #if defined(WEATHER_AERIS)
 	fprintf_P(stream_file, PSTR("\t\"apiid\" : \"%s\",\n"), settings.apiId);
@@ -271,9 +274,7 @@ static void JSONSettings(const KVPairs & key_value_pairs, FILE * stream_file)
 #endif
 
 
-fprintf_P(stream_file, PSTR("\t\"bias_temp\" : \"%d\",\n"), GetTempBias());
-fprintf_P(stream_file, PSTR("\t\"bias_humid\" : \"%d\",\n"), GetHumidityBias());
-fprintf_P(stream_file, PSTR("\t\"bias_rain\" : \"%d\",\n"), GetRainBias());
+
 
 
 
