@@ -10,12 +10,7 @@
 #include <stdlib.h>
 #include "settings.h" // Include to read EEPROM bias values
 
-#ifdef ARDUINO
 #include <avr/eeprom.h> // Include for eeprom_read_word
-
-#else
-#include "fakeeeprom.h"
-#endif
 
 Weather::Settings Weather::GetSettings(void) {
 	Settings settings = {0};

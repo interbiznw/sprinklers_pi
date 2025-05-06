@@ -12,6 +12,7 @@
 #include <sstream>
 #include <curl/curl.h>
 #include <json/json.h>
+#include <avr/eeprom.h>
 
 Wunderground::Wunderground(void)
 {

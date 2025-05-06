@@ -7,15 +7,10 @@
 #include "web.h"
 #include "settings.h"
 #ifdef ARDUINO
-#include <avr/eeprom.h> // Include for eeprom_read_word
 #include "nntp.h"
-#else
-#include "fakeeeprom.h"
 #endif
 
-#ifndef ARDUINO
-std::map<uint16_t, uint16_t> fakeEEPROM;
-#endif
+#include <avr/eeprom.h>
 
 #if defined(WEATHER_WUNDERGROUND)
 #include "Wunderground.h"
