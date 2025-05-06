@@ -41,6 +41,8 @@ int16_t Weather::GetScale(const ReturnVals & vals) const
 {
 	if (!vals.valid)
 		return 100;
+		trace(F("Weather Values - Temp: %d, MinHum: %d, MaxHum: %d, Precip: %d\n"),
+      vals.meantempi, vals.minhumidity, vals.maxhumidity, vals.precipi);
 	const int humid_factor = NEUTRAL_HUMIDITY - (vals.maxhumidity + vals.minhumidity) / 2;
 	const int temp_factor = (vals.meantempi - 70) * 4;
 	const int rain_factor = (vals.precipi + vals.precip_today) * -2;
