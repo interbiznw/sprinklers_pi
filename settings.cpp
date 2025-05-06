@@ -356,36 +356,40 @@ bool SetSettings(const KVPairs & key_value_pairs)
 			SetUsePWS(strcmp(value, "pws") == 0);
 			trace("Processed key: %s\n", key);
 		}
-		else if (strcmp(key, "bias_temp") == 0) {
-			if (value == NULL || strlen(value) == 0) {
-				trace("ERROR: bias_temp value missing or null\n");
-				return false;
-			}
-			int16_t v = atoi(value);
-			trace("SetSettings(): Writing bias_temp=%d to EEPROM\n", v);
-			SetTempBias(v);
-		}
-		else if (strcmp(key, "bias_humid") == 0)
-		{
-				if (value == NULL || strlen(value) == 0) {
-						trace("Skipping bias_humid: value missing or null\n");
-						continue;
-				}
-				int16_t v = atoi(value);
-				trace("SetSettings(): Writing bias_humid=%d to EEPROM\n", v);
-				SetHumidityBias(v);
-		}
 
-		else if (strcmp(key, "bias_rain") == 0)
-		{
-				if (value == NULL || strlen(value) == 0) {
-						trace("Skipping bias_rain: value missing or null\n");
-						continue;
-				}
-				int16_t v = atoi(value);
-				trace("SetSettings(): Writing bias_rain=%d to EEPROM\n", v);
-				SetRainBias(v);
-		}
+		else if (strcmp(key, "bias_temp") == 0) {
+			int16_t v = 1;
+			if (value != NULL && strlen(value) > 0) {
+					v = atoi(value);
+					trace("SetSettings(): Writing bias_temp=%d to EEPROM\n", v);
+			} else {
+					trace("bias_temp not provided, defaulting to 1\n");
+			}
+			SetTempBias(v);
+	}
+
+	else if (strcmp(key, "bias_humid") == 0) {
+			int16_t v = 1;
+			if (value != NULL && strlen(value) > 0) {
+					v = atoi(value);
+					trace("SetSettings(): Writing bias_humid=%d to EEPROM\n", v);
+			} else {
+					trace("bias_humid not provided, defaulting to 1\n");
+			}
+			SetHumidityBias(v);
+	}
+
+	else if (strcmp(key, "bias_rain") == 0) {
+			int16_t v = 1;
+			if (value != NULL && strlen(value) > 0) {
+					v = atoi(value);
+					trace("SetSettings(): Writing bias_rain=%d to EEPROM\n", v);
+			} else {
+					trace("bias_rain not provided, defaulting to 1\n");
+			}
+			SetRainBias(v);
+	}
+
 
 
 ////		else
