@@ -689,6 +689,10 @@ static bool ParseHTTPHeader(EthernetClient & client, KVPairs * key_value_pairs, 
 		}
 		char c = *(recvbufptr++);
 		//Serial.print(c);
+		if (c == '\r') {
+			// ignore bare carriage returns so they don't drive you into ERROR
+			continue;
+	}
 
 		switch (current_state)
 		{
