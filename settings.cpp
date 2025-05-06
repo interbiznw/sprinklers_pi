@@ -348,10 +348,9 @@ bool SetSettings(const KVPairs & key_value_pairs)
 						trace("ERROR: bias_temp value missing or null\n");
 						return false;
 				}
-				uint16_t v = atoi(value);
+				int16_t v = atoi(value);
 				trace("Writing bias_temp=%d to EEPROM\n", v);
-				EEPROM.write(1170, v & 0xFF);
-				EEPROM.write(1171, (v >> 8) & 0xFF);
+				SetTempBias(v);
 		}
 		else if (strcmp(key, "bias_humid") == 0)
 		{
@@ -359,10 +358,9 @@ bool SetSettings(const KVPairs & key_value_pairs)
 						trace("ERROR: bias_humid value missing or null\n");
 						return false;
 				}
-				uint16_t v = atoi(value);
+				int16_t v = atoi(value);
 				trace("Writing bias_humid=%d to EEPROM\n", v);
-				EEPROM.write(1172, v & 0xFF);
-				EEPROM.write(1173, (v >> 8) & 0xFF);
+				SetHumidityBias(v);
 		}
 		else if (strcmp(key, "bias_rain") == 0)
 		{
@@ -370,10 +368,9 @@ bool SetSettings(const KVPairs & key_value_pairs)
 						trace("ERROR: bias_rain value missing or null\n");
 						return false;
 				}
-				uint16_t v = atoi(value);
+				int16_t v = atoi(value);
 				trace("Writing bias_rain=%d to EEPROM\n", v);
-				EEPROM.write(1174, v & 0xFF);
-				EEPROM.write(1175, (v >> 8) & 0xFF);
+				SetRainBias(v);
 		}
 		else
 		{
