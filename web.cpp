@@ -269,11 +269,16 @@ static void JSONSettings(const KVPairs & key_value_pairs, FILE * stream_file)
 	fprintf_P(stream_file, PSTR("\t\"apisecret\" : \"%s\",\n"), settings.apiSecret);
 	fprintf_P(stream_file, PSTR("\t\"loc\" : \"%s\",\n"), settings.location);
 #endif
-	// leave this value last, it has no comma after the value
-	////fprintf_P(stream_file, PSTR("\t\"bias_temp\" : \"%d\",\n"), (int16_t)(EEPROM.read(ADDR_TEMP_BIAS) | (EEPROM.read(ADDR_TEMP_BIAS + 1) << 8)));
-	////fprintf_P(stream_file, PSTR("\t\"bias_humid\" : \"%d\",\n"), (int16_t)(EEPROM.read(ADDR_HUMIDITY_BIAS) | (EEPROM.read(ADDR_HUMIDITY_BIAS + 1) << 8)));
-	////fprintf_P(stream_file, PSTR("\t\"bias_rain\" : \"%d\",\n"), (int16_t)(EEPROM.read(ADDR_RAIN_BIAS) | (EEPROM.read(ADDR_RAIN_BIAS + 1) << 8)));
 
+
+fprintf_P(stream_file, PSTR("\t\"bias_temp\" : \"%d\",\n"), GetTempBias());
+fprintf_P(stream_file, PSTR("\t\"bias_humid\" : \"%d\",\n"), GetHumidityBias());
+fprintf_P(stream_file, PSTR("\t\"bias_rain\" : \"%d\",\n"), GetRainBias());
+
+
+
+
+	// leave this value last, it has no comma after the value
 	fprintf_P(stream_file, PSTR("\t\"sadj\" : \"%ld\"\n"), (long) GetSeasonalAdjust());
 	fprintf(stream_file, "}");
 }
