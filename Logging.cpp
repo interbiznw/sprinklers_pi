@@ -110,41 +110,48 @@ void Logging::Close()
 
 bool Logging::LogZoneEvent(time_t start, int zone, int duration, int schedule, int sadj, int wunderground)
 {
-
-	char * zErrMsg = 0;
+	// Insert into SQLite log table
+	char* zErrMsg = 0;
 	char sSQL[100];
-	snprintf(sSQL, sizeof(sSQL), "INSERT INTO zonelog VALUES(%ld, %d, %d, %d, %d, %d);", start, zone, duration, schedule, sadj, wunderground);
-	sSQL[sizeof(sSQL) - 1] = 0;
-	if (sqlite3_exec(m_db, sSQL, NULL, NULL, &zErrMsg) != SQLITE_OK)
-	{
-		trace("SQL Error (%s)\n", zErrMsg);
-		sqlite3_free(zErrMsg);
-		return false;
+	snprintf(sSQL, sizeof(sSQL),
+			"INSERT INTO zonelog VALUES(%ld, %d, %d, %d, %d, %d);",
+			start, zone, duration, schedule, sadj, wunderground);
+	sSQL[sizeof(sSQL) - 1] = '\0';
+
+	if (sqlite3_exec(m_db, sSQL, NULL, NULL, &zErrMsg) != SQLITE_OK) {
+			trace("SQL Error (%s)\n", zErrMsg);
+			sqlite3_free(zErrMsg);
+			return false;
 	}
-	char cmd[512];
+
+	// Log to NTFY
 	trace(F("Logging Zone Event: zone %d, schedule %d, duration %d\n"), zone, schedule, duration);
+
 	FullZone z;
-	LoadZone(zone, &z);  // zone is the zone number you're logging
-	trace(F("Loaded Zone name: %s\n"), z.name);
-	const char* zoneName = z.name;
+	const char* zoneName;
+
+	if (zone >= 0 && zone < NUM_ZONES) {
+			LoadZone(zone, &z);
+			zoneName = z.name;
+			trace(F("Loaded Zone name: %s\n"), zoneName);
+	} else {
+			zoneName = "Unknown";
+			trace(F("Zone index %d out of range. Using fallback name.\n"), zone);
+	}
+
+	char cmd[512];
 	snprintf(cmd, sizeof(cmd),
-	"curl -H \"Authorization: Bearer tk_jjldqavvt53ik5zm5pg86c928olen\" "
-	"-H \"Title: %s ended\" "
-	"-d \"Zone %s (%d sec, Schedule %d)\" "
-	"https://ntfy.interbiznw.dev/Irrigation",
-	zoneName, zoneName, duration, schedule);
+			"curl -H \"Authorization: Bearer tk_jjldqavvt53ik5zm5pg86c928olen\" "
+			"-H \"Title: %s ended\" "
+			"-d \"Zone %s (%d sec, Schedule %d)\" "
+			"https://ntfy.interbiznw.dev/Irrigation",
+			zoneName, zoneName, duration, schedule);
+
 	system(cmd);
 
-
-
-
-
-
-
-
 	return true;
-
 }
+
 
 static void DumpData(FILE * stream_file, uint32_t bin_data[], uint32_t bins, uint32_t bin_scale, uint32_t bin_offset, bool bMil)
 {
