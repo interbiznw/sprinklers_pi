@@ -20,11 +20,12 @@ Schedule::Schedule() : m_type(0), day(0)
 
 void LoadSchedule(uint8_t num, Schedule * pSched)
 {
-	if (num < 0 || num >= MAX_SCHEDULES)
+	if (num >= MAX_SCHEDULES)
 		return;
+
 	for (uint8_t i = 0; i < sizeof(Schedule); ++i)
 	{
-		*(((char*) pSched) + i) = EEPROM.read(SCHEDULE_OFFSET + i + SCHEDULE_INDEX * num);
+		*(((char*) pSched) + i) = EEPROM.read(SCHEDULE_OFFSET + i + sizeof(Schedule) * num);
 	}
 }
 
