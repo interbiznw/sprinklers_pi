@@ -274,8 +274,9 @@ static runStateClass::DurationAdjustments AdjustDurations(Schedule * sched)
 	long scale = ((long)adj.seasonal * (long)adj.wunderground) / 100;
 
 	for (uint8_t k = 0; k < NUM_ZONES; k++) {
+			trace("Original duration for zone %d: %d\n", k+1, sched->zone_duration[k]);
 			sched->zone_duration[k] = (uint8_t)spi_min(((long)sched->zone_duration[k] * scale + 50) / 100, 255);
-			trace("Adjusted duration for zone %d: %d (scale: %ld)\n", k + 1, sched->zone_duration[k], scale);
+			trace("Adjusted duration for zone %d: %d (scale: %ld)\n", k+1, sched->zone_duration[k], scale);tt
 	}
 
 	return adj;
