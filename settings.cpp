@@ -263,6 +263,14 @@ bool SetSettings(const KVPairs & key_value_pairs)
 {
 	for (int i = 0; i < key_value_pairs.num_pairs; i++)
 	{
+		if (key == NULL || strlen(key) == 0) {
+			trace("Skipping empty/null key\n");
+			continue;
+	}
+	if (value == NULL) {
+			trace("Skipping key %s due to NULL value\n", key);
+			continue;
+	}
 		const char * key = key_value_pairs.keys[i];
 		const char * value = key_value_pairs.values[i];
 		// <<< ADD THIS printf >>>
