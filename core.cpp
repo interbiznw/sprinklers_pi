@@ -240,7 +240,7 @@ static void pumpControl(bool val)
 void TurnOnZone(int iValve)
 {
 	trace(F("Turning on Zone %d\n"), iValve);
-	trace("Zone %d turned ON with endTime: %d\n", iValve, runState.m_endTime);
+
 	if ((iValve <= 0) || (iValve > NUM_ZONES))
 		return;
 
@@ -276,7 +276,8 @@ static runStateClass::DurationAdjustments AdjustDurations(Schedule * sched)
 
 	for (uint8_t k = 0; k < NUM_ZONES; k++) {
 		trace("Original duration for zone %d: %d\n", k+1, sched->zone_duration[k]);
-		sched->zone_duration[k] = (uint8_t)spi_min(((long)sched->zone_duration[k] * scale + 50) / 100, 255);
+		//sched->zone_duration[k] = (uint8_t)spi_min(((long)sched->zone_duration[k] * scale + 50) / 100, 255);
+		sched->zone_duration[k] = (uint8_t)spi_min(((long)sched->zone_duration[k] * scale) / 100, 255);
 		trace("Adjusted duration for zone %d: %d (scale: %ld)\n", k+1, sched->zone_duration[k], scale);
 	}
 
