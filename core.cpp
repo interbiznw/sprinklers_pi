@@ -240,6 +240,7 @@ static void pumpControl(bool val)
 void TurnOnZone(int iValve)
 {
 	trace(F("Turning on Zone %d\n"), iValve);
+	trace("Zone %d turned ON with endTime: %d\n", iValve, runState.m_endTime);
 	if ((iValve <= 0) || (iValve > NUM_ZONES))
 		return;
 
