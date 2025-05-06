@@ -36,6 +36,10 @@ public:
 		// Today's Values
 		short precip_today;
 		short UV;
+		// Bias values read from EEPROM
+		int16_t temp_bias;
+		int16_t humid_bias;
+		int16_t rain_bias;
 	};
 	struct Settings
 	{
