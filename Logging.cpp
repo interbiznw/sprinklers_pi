@@ -122,13 +122,16 @@ bool Logging::LogZoneEvent(time_t start, int zone, int duration, int schedule, i
 		return false;
 	}
 	char cmd[512];
-	const char* zoneName = settings.m_zone[zone].name;
+
+	FullZone z;
+	LoadZone(zone, &z);  // zone is the zone number you're logging
+	const char* zoneName = z.name;
 	snprintf(cmd, sizeof(cmd),
-	"curl -H \"Authorization: Bearer %s\" "
+	"curl -H \"Authorization: Bearer tk_jjldqavvt53ik5zm5pg86c928olen\" "
 	"-H \"Title: %s ended\" "
 	"-d \"Zone %s (%d sec, Schedule %d)\" "
-	"\"https://ntfy.example.com/yourtopic\"",
-	tk_jjldqavvt53ik5zm5pg86c928olen, zoneName, zoneName, duration, schedule);
+	"https://ntfy.interbiznw.dev/Irrigation",
+	zoneName, zoneName, duration, schedule);
 	system(cmd);
 
 
