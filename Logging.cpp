@@ -124,46 +124,44 @@ bool Logging::LogZoneEvent(time_t start, int zone, int duration, int schedule, i
 		return false;
 	}
 
+	// Log to NTFY
 	trace(F("Logging Zone Event: zone %d, schedule %d, duration %d\n"), zone, schedule, duration);
 
-	// Load zone name
-	FullZone z;
-	const char* zoneName;
-	if (zone >= 0 && zone < NUM_ZONES) {
-		LoadZone(zone, &z);
-		zoneName = z.name[0] ? z.name : "Unnamed Zone";
+	// Load Zone name
+	const char* zoneName = "Unknown";
+	if (zone > 0 && zone <= NUM_ZONES) {
+		FullZone z;
+		LoadZone(zone - 1, &z);
+		zoneName = z.name;
 		trace(F("Loaded Zone name: %s\n"), zoneName);
 	} else {
-		zoneName = "Unknown";
 		trace(F("Zone index %d out of range. Using fallback name.\n"), zone);
 	}
 
-	// Load schedule name
-	Schedule sched;
-	const char* schedName;
+	// Load Schedule name
+	const char* schedName = "Unnamed Schedule";
 	if (schedule >= 0 && schedule < MAX_SCHEDULES) {
-		LoadSchedule(schedule, &sched);
-		schedName = sched.name[0] ? sched.name : "Unnamed Schedule";
+		Schedule s;
+		LoadSchedule(schedule, &s);
+		schedName = s.name;
 		trace(F("Loaded Schedule name: %s\n"), schedName);
 	} else {
-		schedName = "Unknown";
 		trace(F("Schedule index %d out of range. Using fallback name.\n"), schedule);
 	}
 
-	// Build and send curl command to NTFY
 	char cmd[512];
 	snprintf(cmd, sizeof(cmd),
 		"curl -H \"Authorization: Bearer tk_jjldqavvt53ik5zm5pg86c928olen\" "
-		"-H \"Title: %s ended\" "
+		"-H \"Title: Zone %s ended\" "
 		"-d \"Zone %s (%d sec, Schedule %d: %s)\" "
 		"https://ntfy.interbiznw.dev/Irrigation",
-		zoneName, zoneName, duration, schedule + 1, schedName);  // display 1-based schedule
+		zoneName, zoneName, duration, schedule + 1, schedName);  // schedule + 1 is to match user-facing numbering
 
-	cmd[sizeof(cmd) - 1] = '\0';
 	system(cmd);
 
 	return true;
 }
+
 
 
 
