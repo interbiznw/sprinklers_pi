@@ -875,90 +875,219 @@ static bool ParseHTTPHeader(EthernetClient & client, KVPairs * key_value_pairs, 
 
 void web::ProcessWebClients()
 {
-    EthernetClient client = m_server->available();
-    if (!client) return;
-
-    // --- Read just the request-line ---
-    char requestLine[256] = {0};
-    client.readBytesUntil('\n', requestLine, sizeof(requestLine));
-
-    // --- Drain remaining headers up to blank line ---
-    while (client.connected()) {
-        char c = client.read();
-        if (c == '\n') break;
-    }
-
-    // --- Extract path+query from the request line ---
-    // requestLine is e.g. "GET /bin/settings?bias_temp=... HTTP/1.1"
-    char *space1 = strchr(requestLine, ' ');
-    if (!space1) { client.stop(); return; }
-    char *space2 = strchr(space1 + 1, ' ');
-    int pathLen = space2 ? (space2 - (space1 + 1)) : strlen(space1 + 1);
-    char sPage[64];
-    if (pathLen >= (int)sizeof(sPage)) pathLen = sizeof(sPage)-1;
-    strncpy(sPage, space1 + 1, pathLen);
-    sPage[pathLen] = '\0';
-    // Now sPage is "/bin/settings?bias_temp=...".
-
-    // --- Parse the query string into key_value_pairs ---
-    KVPairs key_value_pairs = {0};
-    char *qmark = strchr(sPage, '?');
-    if (qmark) {
-        *qmark = '\0';            // split off page
-        parseQueryString(qmark + 1, key_value_pairs);
-    }
-
-    // --- Dispatch your endpoints ---
-    FILE *pFile = fdopen(client.GetSocket(), "w");
-    trace(F("Page: %s\n"), sPage);
-
-    if (strcmp(sPage + 1, "bin/settings") == 0) {  // note: skip the leading '/'
-        SetSettings(key_value_pairs);
-        ReloadEvents();
-        ServeHeader(pFile, 200, "OK", false);
-    }
-    else if (strcmp(sPage + 1, "bin/setSched") == 0) {
-        if (SetSchedule(key_value_pairs)) {
-            if (GetRunSchedules()) ReloadEvents();
-            ServeHeader(pFile, 200, "OK", false);
-        } else ServeError(pFile);
-    }
-    else if (strcmp(sPage + 1, "bin/setZones") == 0) {
-        if (SetZones(key_value_pairs)) {
-            ReloadEvents();
-            ServeHeader(pFile, 200, "OK", false);
-        } else ServeError(pFile);
-    }
-    // … repeat for delSched, setQSched, manual, chatter, run, factory, reset …
-    else if (strncmp(sPage + 1, "json/", 5) == 0) {
-        if (strcmp(sPage + 1, "json/settings") == 0)       JSONSettings(key_value_pairs, pFile);
-        else if (strcmp(sPage + 1, "json/schedules") == 0) JSONSchedules(key_value_pairs, pFile);
-        else if (strcmp(sPage + 1, "json/zones") == 0)     JSONZones(key_value_pairs, pFile);
-        else if (strcmp(sPage + 1, "json/state") == 0)     JSONState(key_value_pairs, pFile);
-        else if (strcmp(sPage + 1, "json/schedule") == 0)  JSONSchedule(key_value_pairs, pFile);
-        else if (strcmp(sPage + 1, "json/wcheck") == 0)    JSONwCheck(key_value_pairs, pFile);
-#ifdef LOGGING
-        else if (strcmp(sPage + 1, "json/logs") == 0)      JSONLogs(key_value_pairs, pFile);
-        else if (strcmp(sPage + 1, "json/tlogs") == 0)     JSONtLogs(key_value_pairs, pFile);
+	// listen for incoming clients
+	EthernetClient client = m_server->available();
+	if (client)
+	{
+		bool bReset = false;
+#ifdef ARDUINO
+		FILE stream_file;
+		FILE * pFile = &stream_file;
+		setup_sendbuf();
+		fdev_setup_stream(pFile, stream_putchar, NULL, _FDEV_SETUP_WRITE);
+		stream_file.udata = &client;
+#else
+		FILE * pFile = fdopen(client.GetSocket(), "w");
 #endif
-        else Serve404(pFile);
-    }
-    else {
-        // static file serving (index.htm, etc.)
-        if (strlen(sPage) == 0) strcpy(sPage, "/index.htm");
-        char fsPath[64];
-        snprintf(fsPath, sizeof(fsPath), "%s%s", WEB_PREFIX, sPage+1);
-        SdFile theFile;
-        if (!theFile.open(fsPath, O_READ)) {
-            Serve404(pFile);
-        } else {
-            ServeFile(pFile, fsPath, theFile, client);
-            theFile.close();
-        }
-    }
+		freeMemory();
+		trace(F("Got a client\n"));
+		//ShowSockStatus();
+		KVPairs key_value_pairs;
+		char sPage[55];
 
-    fflush(pFile);
-    fclose(pFile);
-    client.stop();
+		if (!ParseHTTPHeader(client, &key_value_pairs, sPage, sizeof(sPage)))
+		{
+			trace(F("ERROR!\n"));
+			ServeError(pFile);
+		}
+		else
+		{
+
+			trace(F("Page:%s\n"), sPage);
+			//ShowSockStatus();
+
+			if (strcmp(sPage, "bin/setSched") == 0)
+			{
+				if (SetSchedule(key_value_pairs))
+				{
+					if (GetRunSchedules())
+						ReloadEvents();
+					ServeHeader(pFile, 200, "OK", false);
+				}
+				else
+					ServeError(pFile);
+			}
+			else if (strcmp(sPage, "bin/setZones") == 0)
+			{
+				if (SetZones(key_value_pairs))
+				{
+					ReloadEvents();
+					ServeHeader(pFile, 200, "OK", false);
+				}
+				else
+					ServeError(pFile);
+			}
+			else if (strcmp(sPage, "bin/delSched") == 0)
+			{
+				if (DeleteSchedule(key_value_pairs))
+				{
+					if (GetRunSchedules())
+						ReloadEvents();
+					ServeHeader(pFile, 200, "OK", false);
+				}
+				else
+					ServeError(pFile);
+			}
+			else if (strcmp(sPage, "bin/setQSched") == 0)
+			{
+				if (SetQSched(key_value_pairs))
+				{
+					ServeHeader(pFile, 200, "OK", false);
+				}
+				else
+					ServeError(pFile);
+			}
+			else if (strcmp(sPage, "bin/settings") == 0) {
+				// bypass ParseHTTPHeader kvs for settings: grab raw GET line
+				// (assumes you stored it in a buffer called `requestLine`)
+				char *q = strchr(requestLine, '?');
+				if (q) {
+					q++;                               // move past '?'
+					parseQueryString(q, key_value_pairs);
+				}
+				// now key_value_pairs contains all bias_temp, bias_humid, bias_rain, etc.
+				SetSettings(key_value_pairs);
+				ReloadEvents();
+				ServeHeader(pFile, 200, "OK", false);
+			}
+			else if (strcmp(sPage, "bin/manual") == 0)
+			{
+				if (ManualZone(key_value_pairs))
+				{
+					ServeHeader(pFile, 200, "OK", false);
+				}
+				else
+					ServeError(pFile);
+			}
+			else if (strcmp(sPage, "bin/chatter") == 0)
+			{
+				if (ChatterZone(key_value_pairs))
+				{
+					ServeHeader(pFile, 200, "OK", false);
+				}
+				else
+					ServeError(pFile);
+			}
+			else if (strcmp(sPage, "bin/run") == 0)
+			{
+				if (RunSchedules(key_value_pairs))
+				{
+					ReloadEvents();
+					ServeHeader(pFile, 200, "OK", false);
+				}
+				else
+					ServeError(pFile);
+			}
+			else if (strcmp(sPage, "bin/factory") == 0)
+			{
+				ResetEEPROM();
+				ReloadEvents();
+				ServeHeader(pFile, 200, "OK", false);
+			}
+			else if (strcmp(sPage, "bin/reset") == 0)
+			{
+				ServeHeader(pFile, 200, "OK", false);
+				bReset = true;
+			}
+			else if (strcmp(sPage, "json/schedules") == 0)
+			{
+				JSONSchedules(key_value_pairs, pFile);
+			}
+			else if (strcmp(sPage, "json/zones") == 0)
+			{
+				JSONZones(key_value_pairs, pFile);
+			}
+			else if (strcmp(sPage, "json/settings") == 0)
+			{
+				JSONSettings(key_value_pairs, pFile);
+			}
+			else if (strcmp(sPage, "json/state") == 0)
+			{
+				JSONState(key_value_pairs, pFile);
+			}
+			else if (strcmp(sPage, "json/schedule") == 0)
+			{
+				JSONSchedule(key_value_pairs, pFile);
+			}
+			else if (strcmp(sPage, "json/wcheck") == 0)
+			{
+				JSONwCheck(key_value_pairs, pFile);
+			}
+#ifdef LOGGING
+			else if (strcmp(sPage, "json/logs") == 0)
+			{
+				JSONLogs(key_value_pairs, pFile);
+			}
+			else if (strcmp(sPage, "json/tlogs") == 0)
+			{
+				JSONtLogs(key_value_pairs, pFile);
+			}
+#endif
+			else if (strcmp(sPage, "ShowSched") == 0)
+			{
+				freeMemory();
+				ServeSchedPage(pFile);
+			}
+			else if (strcmp(sPage, "ShowZones") == 0)
+			{
+				freeMemory();
+				ServeZonesPage(pFile);
+			}
+			else if (strcmp(sPage, "ShowEvent") == 0)
+			{
+				ServeEventPage(pFile);
+			}
+			else if (strcmp(sPage, "ReloadEvent") == 0)
+			{
+				ReloadEvents(true);
+				ServeEventPage(pFile);
+			}
+			else
+			{
+				if (strlen(sPage) == 0)
+					strcpy(sPage, "index.htm");
+				// prepend path
+				memmove(sPage + WEB_LEN, sPage, sizeof(sPage) - WEB_LEN);
+				memcpy(sPage, WEB_PREFIX, WEB_LEN);
+				sPage[sizeof(sPage)-1] = 0;
+				trace(F("Serving Page: %s\n"), sPage);
+				SdFile theFile;
+				if (!theFile.open(sPage, O_READ))
+					Serve404(pFile);
+				else
+				{
+					if (theFile.isFile())
+						ServeFile(pFile, sPage, theFile, client);
+					else
+						Serve404(pFile);
+					theFile.close();
+				}
+			}
+		}
+
+#ifdef ARDUINO
+		flush_sendbuf(client);
+		// give the web browser time to receive the data
+		delay(1);
+#else
+		fflush(pFile);
+		fclose(pFile);
+#endif
+		// close the connection:
+		client.stop();
+
+		if (bReset)
+			sysreset();
+	}
 }
 
