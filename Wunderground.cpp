@@ -90,7 +90,7 @@ Weather::ReturnVals Wunderground::InternalGetVals(const Weather::Settings & sett
 		//ret.humid_bias = (int16_t)(EEPROM.read(1172) | (EEPROM.read(1173) << 8));
 		ret.humid_bias = 5;
 		//ret.rain_bias = (int16_t)(EEPROM.read(1174) | (EEPROM.read(1175) << 8));
-		ret.rain_bias = 9
+		ret.rain_bias = 9;
 
 
 	} catch (const std::exception& e) {
