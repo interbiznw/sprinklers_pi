@@ -10,7 +10,7 @@
 class EthernetServer;
 
 // total number of kv pairs
-#define NUM_KEY_VALUES 50
+#define NUM_KEY_VALUES 100
 // largest allowed key
 #define KEY_SIZE 10
 // largest allowed value
