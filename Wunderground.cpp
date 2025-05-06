@@ -37,8 +37,8 @@ Weather::ReturnVals Wunderground::InternalGetVals(const Weather::Settings & sett
 
 	std::stringstream url;
 	url << "https://" << m_wundergroundAPIHost
-	<< "/v2/pws/observations/all/1day?stationId=" << settings.pws
-	<< "&format=json&units=e&apiKey=" << settings.key;
+		<< "/v2/pws/dailysummary/7day?stationId=" << settings.pws
+		<< "&format=json&units=e&apiKey=" << settings.key;
 
 	curl_easy_setopt(curl, CURLOPT_URL, url.str().c_str());
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
@@ -63,14 +63,21 @@ Weather::ReturnVals Wunderground::InternalGetVals(const Weather::Settings & sett
 	}
 
 	try {
-		const Json::Value& obs = json["observations"][0];
+		// Select the 6th day in the summary (index 5 is one day before current)
+		const Json::Value& obs = json["summaries"][5];
 		ret.valid = true;
 		ret.keynotfound = false;
-		ret.meantempi = obs["imperial"]["tempAvg"].asInt();
-		ret.minhumidity = obs["humidityMin"].asInt();
-		ret.maxhumidity = obs["humidityMax"].asInt();
-		ret.precipi = obs["imperial"]["precipTotal"].asFloat() * 100.0f;
-		ret.windmph = obs["imperial"]["windSpeedAvg"].asFloat() * 10.0f;
+
+		if (obs.isMember("imperial")) {
+			const auto& imp = obs["imperial"];
+			if (imp.isMember("tempAvg")) ret.meantempi = imp["tempAvg"].asInt();
+			if (imp.isMember("precipTotal")) ret.precipi = imp["precipTotal"].asFloat() * 100.0f;
+			if (imp.isMember("windspeedAvg")) ret.windmph = imp["windspeedAvg"].asFloat() * 10.0f;
+		}
+
+		if (obs.isMember("humidityLow")) ret.minhumidity = obs["humidityLow"].asInt();
+		if (obs.isMember("humidityHigh")) ret.maxhumidity = obs["humidityHigh"].asInt();
+
 	} catch (const std::exception& e) {
 		trace("Error extracting fields: %s\n", e.what());
 		ret.valid = false;
