@@ -261,8 +261,8 @@ bool SetZones(const KVPairs & key_value_pairs)
 
 bool SetSettings(const KVPairs & key_value_pairs)
 {
-	trace(">>> Entering SetSettings with %d pairs <<<\n", key_value_pairs.num_pairs);
-
+	//trace(">>> Entering SetSettings with %d pairs <<<\n", key_value_pairs.num_pairs);
+	trace("💥 ENTERED SetSettings from settings.cpp (bias logger build) 💥\n");
 	for (int i = 0; i < key_value_pairs.num_pairs; i++)
 	{
 
