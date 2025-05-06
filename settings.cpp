@@ -299,50 +299,62 @@ bool SetSettings(const KVPairs & key_value_pairs)
 		else if (strcmp(key, "apikey") == 0)
 		{
 			SetApiKey(value);
+			trace("Processed key: %s\n", key);
 		}
 		else if (strcmp(key, "apiid") == 0)
 		{
 			SetApiId(value);
+			trace("Processed key: %s\n", key);
 		}
 		else if (strcmp(key, "apisecret") == 0)
 		{
 			SetApiSecret(value);
+			trace("Processed key: %s\n", key);
 		}
 		else if (strcmp(key, "zip") == 0)
 		{
 			SetZip(strtoul(value, 0, 10));
+			trace("Processed key: %s\n", key);
 		}
 		else if (strcmp(key, "NTPip") == 0)
 		{
 			SetNTPIP(decodeIP(value));
+			trace("Processed key: %s\n", key);
 		}
 		else if (strcmp(key, "NTPoffset") == 0)
 		{
 			SetNTPOffset(atoi(value));
+			trace("Processed key: %s\n", key);
 		}
 		else if (strcmp(key, "ot") == 0)
 		{
 			SetOT((EOT)atoi(value));
+			trace("Processed key: %s\n", key);
 		}
 		else if (strcmp(key, "webport") == 0)
 		{
 			SetWebPort(atoi(value));
+			trace("Processed key: %s\n", key);
 		}
 		else if (strcmp(key, "sadj") == 0)
 		{
 			SetSeasonalAdjust(atoi(value));
+			trace("Processed key: %s\n", key);
 		}
 		else if (strcmp(key, "pws") == 0)
 		{
 			SetPWS(value);
+			trace("Processed key: %s\n", key);
 		}
 		else if (strcmp(key, "loc") == 0)
 		{
 			SetLoc(value);
+			trace("Processed key: %s\n", key);
 		}
 		else if (strcmp(key, "wutype") == 0)
 		{
 			SetUsePWS(strcmp(value, "pws") == 0);
+			trace("Processed key: %s\n", key);
 		}
 		else if (strcmp(key, "bias_temp") == 0)
 		{
@@ -354,6 +366,8 @@ bool SetSettings(const KVPairs & key_value_pairs)
 				int16_t v = atoi(value);
 				trace("Writing bias_temp=%d to EEPROM\n", v);
 				SetTempBias(v);
+				trace("Processed key: %s\n", key);
+
 		}
 		else if (strcmp(key, "bias_humid") == 0)
 		{
@@ -364,6 +378,7 @@ bool SetSettings(const KVPairs & key_value_pairs)
 				int16_t v = atoi(value);
 				trace("Writing bias_humid=%d to EEPROM\n", v);
 				SetHumidityBias(v);
+				trace("Processed key: %s\n", key);
 		}
 		else if (strcmp(key, "bias_rain") == 0)
 		{
@@ -374,7 +389,9 @@ bool SetSettings(const KVPairs & key_value_pairs)
 				int16_t v = atoi(value);
 				trace("Writing bias_rain=%d to EEPROM\n", v);
 				SetRainBias(v);
+				trace("Processed key: %s\n", key);
 		}
+		else
 		else
 		{
 				trace("Unknown key encountered: %s\n", key);
