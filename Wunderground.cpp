@@ -37,8 +37,8 @@ Weather::ReturnVals Wunderground::InternalGetVals(const Weather::Settings & sett
 
 	std::stringstream url;
 	url << "https://" << m_wundergroundAPIHost
-		<< "/v2/pws/dailysummary/1day?stationId=" << settings.pws
-		<< "&format=json&units=e&apiKey=" << settings.key;
+	<< "/v2/pws/observations/all/1day?stationId=" << settings.pws
+	<< "&format=json&units=e&apiKey=" << settings.key;
 
 	curl_easy_setopt(curl, CURLOPT_URL, url.str().c_str());
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
