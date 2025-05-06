@@ -261,13 +261,17 @@ bool SetZones(const KVPairs & key_value_pairs)
 
 bool SetSettings(const KVPairs & key_value_pairs)
 {
-	////trace(">>> Entering SetSettings with %d pairs <<<\n", key_value_pairs.num_pairs);
-	////trace("💥 ENTERED SetSettings from settings.cpp (bias logger build) 💥\n");
-	for (int i = 0; i < key_value_pairs.num_pairs; i++)
-	{
+	trace("💥 ENTERED SetSettings with %d pairs 💥\n", key_value_pairs.num_pairs);
 
+	for (int i = 0; i < key_value_pairs.num_pairs; i++) {
+		if (!key_value_pairs.keys[i]) {
+			trace("⛔ NULL key at index %d — skipping\n", i);
+			continue;
+		}
 		const char * key = key_value_pairs.keys[i];
 		const char * value = key_value_pairs.values[i];
+
+		trace("SetSettings received key: %s, value: %s\n", key, value ? value : "NULL");
 
 ////		if (key == NULL || strlen(key) == 0) {
 ////			trace("Skipping empty/null key\n");
@@ -370,15 +374,17 @@ bool SetSettings(const KVPairs & key_value_pairs)
 	}
 
 	else if (strcmp(key, "bias_humid") == 0) {
-			trace("Matched key: bias_humid\n");
-			int16_t v = 1;
-			if (value != NULL && strlen(value) > 0) {
-					v = atoi(value);
-					trace("SetSettings(): Writing bias_humid=%d to EEPROM\n", v);
-			} else {
-					trace("bias_humid not provided, defaulting to 1\n");
-			}
-			SetHumidityBias(v);
+		trace("Matched key: bias_humid\n");
+		int16_t v = 1;
+		if (value != NULL && strlen(value) > 0) {
+			v = atoi(value);
+			trace("Parsed bias_humid = %d\n", v);
+		} else {
+			trace("bias_humid not provided, defaulting to 1\n");
+		}
+		trace("Calling SetHumidityBias(%d)\n", v);  // 🔍 BEFORE
+		SetHumidityBias(v);
+		trace("Returned from SetHumidityBias()\n");  // 🔍 AFTER
 	}
 
 	else if (strcmp(key, "bias_rain") == 0) {
@@ -735,9 +741,11 @@ int16_t GetHumidityBias() {
 }
 
 void SetHumidityBias(int16_t bias) {
+	trace("Writing to EEPROM address %d and %d\n", ADDR_HUMIDITY_BIAS, ADDR_HUMIDITY_BIAS + 1);
 	trace("SetHumidityBias(): storing %d into EEPROM\n", bias);
-	EEPROM.write(ADDR_HUMIDITY_BIAS, bias & 0xFF);
-	EEPROM.write(ADDR_HUMIDITY_BIAS + 1, (bias >> 8) & 0xFF);
+	trace("Dummy write: bias_humid = %d\n", bias);
+	//EEPROM.write(ADDR_HUMIDITY_BIAS, bias & 0xFF);
+	//EEPROM.write(ADDR_HUMIDITY_BIAS + 1, (bias >> 8) & 0xFF);
 }
 
 int16_t GetRainBias() {
