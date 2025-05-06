@@ -317,6 +317,7 @@ void LoadSchedTimeEvents(uint8_t sched_num, bool bQuickSchedule)
 				events[iNumEvents].data[0] = k + 1; // Zone to turn on
 				events[iNumEvents].data[1] = (start_time + sched.zone_duration[k]) >> 8;
 				events[iNumEvents].data[2] = (start_time + sched.zone_duration[k]) & 0x00FF;
+				trace("Adding event for zone %d with duration %d\n", k+1, sched.zone_duration[k]);
 				iNumEvents++;
 				start_time += sched.zone_duration[k];
 			}
