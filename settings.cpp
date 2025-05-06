@@ -391,7 +391,7 @@ bool SetSettings(const KVPairs & key_value_pairs)
 				SetRainBias(v);
 				trace("Processed key: %s\n", key);
 		}
-		else
+
 		else
 		{
 				trace("Unknown key encountered: %s\n", key);
