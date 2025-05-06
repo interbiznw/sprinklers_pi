@@ -436,6 +436,9 @@ void ResetEEPROM()
 	SetLoc("");
 	SetUsePWS(false);
 	SetOT(OT_NONE);
+	SetTempBias(1);
+	SetHumidityBias(1);
+	SetRainBias(1);
 }
 
 void SetNumSchedules(const uint8_t iNum)
