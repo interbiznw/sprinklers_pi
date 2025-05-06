@@ -38,7 +38,7 @@
 #define LEN_APISECRET			64
 #define ADDR_LOC				1119
 #define LEN_LOC					50
-#define ADDR_					1169
+
 #define ADDR_TEMP_BIAS      1170
 #define ADDR_HUMIDITY_BIAS  1172
 #define ADDR_RAIN_BIAS      1174
