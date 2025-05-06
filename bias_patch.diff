@@ -1,0 +1,106 @@
+diff --git a/web.cpp b/web.cpp
+index 1234567..abcdef0 100644
+--- a/web.cpp
++++ b/web.cpp
+@@ -55,6 +55,32 @@ web::~web(void)
+     m_server = 0;
+ }
+
++// Splits "a=1&b=2&c=3" into kv pairs
++static void parseQueryString(const char *qs, KVPairs &kv) {
++    kv.num_pairs = 0;
++    while (kv.num_pairs < NUM_KEY_VALUES && *qs) {
++        const char *eq = strchr(qs, '=');
++        if (!eq) break;
++        int keylen = eq - qs;
++        strncpy(kv.keys[kv.num_pairs], qs, keylen);
++        kv.keys[kv.num_pairs][keylen] = '\0';
++
++        const char *amp = strchr(eq + 1, '&');
++        int vallen = amp ? (amp - (eq + 1)) : strlen(eq + 1);
++        strncpy(kv.values[kv.num_pairs], eq + 1, vallen);
++        kv.values[kv.num_pairs][vallen] = '\0';
++
++        kv.num_pairs++;
++        if (!amp) break;
++        qs = amp + 1;
++    }
++}
++
+ // … your existing Init(), ServeHeader, JSON* etc. all unchanged …
+
+ void web::ProcessWebClients()
+@@ -803,82 +829,70 @@ void web::ProcessWebClients()
+     if (!client) return;
+
+-    if (!ParseHTTPHeader(client, &key_value_pairs, sPage, sizeof(sPage))) {
+-        trace(F("ERROR!\n"));
+-        ServeError(pFile);
+-    }
+-    else {
+-
+-        trace(F("Page:%s\n"), sPage);
++    //
++    // Read exactly the first line (the GET request) into requestLine,
++    // then drop the remaining headers up to the blank line:
++    //
++    char requestLine[256] = {0};
++    size_t i = 0;
++    uint8_t byte;
++    while (i < sizeof(requestLine)-1 && client.read(&byte,1) == 1) {
++        requestLine[i++] = byte;
++        if (byte == '\\n') break;
++    }
++    requestLine[i] = '\\0';
++    // drop headers
++    while (client.connected() && client.read(&byte,1) == 1) {
++        if (byte == '\\n') break;
++    }
++
++    // extract path+query
++    char *sp1 = strchr(requestLine, ' ');
++    if (!sp1) { client.stop(); return; }
++    char *sp2 = strchr(sp1+1, ' ');
++    int len = sp2 ? (sp2 - (sp1+1)) : strlen(sp1+1);
++    char sPage[64] = {0};
++    if (len >= (int)sizeof(sPage)) len = sizeof(sPage)-1;
++    memcpy(sPage, sp1+1, len);
++    sPage[len] = '\\0';
++
++    // parse query string
++    KVPairs key_value_pairs = {0};
++    if (char *q = strchr(sPage,'?')) {
++        *q = '\\0';
++        parseQueryString(q+1, key_value_pairs);
++    }
++
++    trace(F("Page: %s\\n"), sPage);
+
+     // … now dispatch on sPage exactly as before, e.g.:
+     if (strcmp(sPage+1, "bin/settings") == 0) {
+         SetSettings(key_value_pairs);
+         ReloadEvents();
+         ServeHeader(pFile, 200, "OK", false);
+     }
+     else if (strcmp(sPage+1, "bin/setSched") == 0) {
+         if (SetSchedule(key_value_pairs)) {
+             if (GetRunSchedules()) ReloadEvents();
+             ServeHeader(pFile, 200, "OK", false);
+         } else ServeError(pFile);
+     }
+     // … and so on for all your other bin/xxx and json/xxx handlers …
+-    }
++    // (rest of file unchanged)
+
+ #ifdef ARDUINO
+     flush_sendbuf(client);
+     delay(1);
+ #else
+     fflush(pFile);
+     fclose(pFile);
+ #endif
+     client.stop();
+
+     if (bReset)
+         sysreset();
+ }
