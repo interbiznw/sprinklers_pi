@@ -54,19 +54,22 @@
     }
 
     function settingsSubmitForm() {
-      $.ajax({
-        data: $('#setForm').serialize(),
-        type: 'get',
-        url: 'bin/settings',
-        success: function (d) {
-          window.history.back();
-        },
-        error: function (xhr, st, e) {
-          alert(st);
-          window.history.back();
-        }
-      });
+  const payload = $('#setForm').serialize();
+  console.log("Submitting settings:", payload);
+  $.ajax({
+    data: payload,
+    type: 'get',
+    url: 'bin/settings',
+    success: function (d) {
+      window.history.back();
+    },
+    error: function (xhr, st, e) {
+      alert(st);
+      window.history.back();
     }
+  });
+}
+
   </script>
   <div data-theme="a" data-role="header">	<a data-role="button" href="javascript:settingsSubmitForm();" data-icon="check" data-iconpos="left" class="ui-btn-right">OK</a>
     <a data-role="button" data-rel="back" href="#page1" data-icon="back" data-iconpos="left" class="ui-btn-left">Cancel</a>
@@ -151,16 +154,31 @@
 
       <div id="bias_tempdiv" data-role="fieldcontain">
         <label for="bias_temp">Temp Bias:</label>
-        <input type="number" name="bias_temp" id="bias_temp" min="-128" max="127" />
+        <input type="number"
+               id="bias_temp"
+               name="bias_temp"
+               min="-128" max="127"
+               value="" />
       </div>
+
       <div id="bias_humiddiv" data-role="fieldcontain">
         <label for="bias_humid">Humidity Bias:</label>
-        <input type="number" name="bias_humid" id="bias_humid" min="-128" max="127" />
+        <input type="number"
+               id="bias_humid"
+               name="bias_humid"
+               min="-128" max="127"
+               value="" />
       </div>
+
       <div id="bias_raindiv" data-role="fieldcontain">
         <label for="bias_rain">Rain Bias:</label>
-        <input type="number" name="bias_rain" id="bias_rain" min="-128" max="127" />
+        <input type="number"
+               id="bias_rain"
+               name="bias_rain"
+               min="-128" max="127"
+               value="" />
       </div>
+
 
 
     </form>
