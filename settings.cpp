@@ -357,13 +357,15 @@ bool SetSettings(const KVPairs & key_value_pairs)
 			trace("Processed key: %s\n", key);
 		}
 		else if (strcmp(key, "bias_temp") == 0) {
-			if (value == NULL || strlen(value) == 0) {
-				trace("ERROR: bias_temp value missing or null\n");
-				return false;
-			}
-			trace("bias_temp handler triggered with value [%s] (strlen=%zu)\n", value, strlen(value));
-			for (size_t i = 0; i < strlen(value); i++)
-				trace("char[%zu] = 0x%02X\n", i, value[i]);
+			trace("bias_temp handler triggered with value [%s] (strlen=%d)\n", value, strlen(value));
+			for (int i = 0; i < strlen(value); i++)
+				trace("char[%d] = 0x%02X\n", i, value[i]);
+
+			// 🔥 This check is redundant and is returning false for empty strings
+			// if (value == NULL || strlen(value) == 0) {
+			// 	trace("ERROR: bias_temp value missing or null\n");
+			// 	return false;
+			// }
 
 			int16_t v = atoi(value);
 			trace("Writing bias_temp=%d to EEPROM\n", v);

@@ -920,16 +920,16 @@ void web::ProcessWebClients()
 					ServeError(pFile);
 			}
 			else if (strcmp(sPage, "bin/settings") == 0)
-{
-    trace("🔧 bin/settings triggered — calling SetSettings()\n");
-    if (SetSettings(key_value_pairs))
-    {
-        ReloadEvents();
-        ServeHeader(pFile, 200, "OK", false);
-    }
-    else
-        ServeError(pFile);
-}
+			{
+					trace("🔧 bin/settings triggered — calling SetSettings()\n");
+					if (SetSettings(key_value_pairs))
+					{
+							ReloadEvents();
+							ServeHeader(pFile, 200, "OK", false);
+					}
+					else
+							ServeError(pFile);
+			}
 			else if (strcmp(sPage, "bin/manual") == 0)
 			{
 				if (ManualZone(key_value_pairs))
