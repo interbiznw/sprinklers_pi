@@ -10,6 +10,7 @@
 #include "settings.h"
 #include <sqlite3.h>
 #include <string.h>
+#include <cstdlib>
 
 Logging::Logging()
 		: m_db(0)
@@ -118,6 +119,21 @@ bool Logging::LogZoneEvent(time_t start, int zone, int duration, int schedule, i
 		sqlite3_free(zErrMsg);
 		return false;
 	}
+	char cmd[512];
+	snprintf(cmd, sizeof(cmd),
+	    "curl -H \"Authorization: Bearer tk_jjldqavvt53ik5zm5pg86c928olen\" "
+	    "-H \"Title: Zone Ended\" "
+	    "-d \"Zone %d finished watering (%d sec, Schedule %d)\" "
+	    "https://ntfy.interbiznw.dev/Irrigation &",
+	    zone, duration, schedule);
+	system(cmd);
+
+
+
+
+
+
+
 	return true;
 
 }

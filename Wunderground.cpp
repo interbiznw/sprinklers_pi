@@ -32,7 +32,7 @@ static void ParseResponse(EthernetClient & client, Weather::ReturnVals * ret)
 	char recvbuf[100];
 	char * recvbufptr = recvbuf;
 	char * recvbufend = recvbuf;
-	char key[30], val[30];
+	char key[65], val[65];
 	char * keyptr = key;
 	char * valptr = val;
 	while (true)

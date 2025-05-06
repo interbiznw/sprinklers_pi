@@ -18,6 +18,7 @@
 #define UV_FACTOR 10.0
 
 #define MM_TO_IN 25.4
+#define LEN_APIKEY 65
 
 class Weather
 {
@@ -39,7 +40,7 @@ public:
 	};
 	struct Settings
 	{
-		char key[17]; //16 character hex
+		char key[LEN_APIKEY]; //16 character hex
 		char apiId[LEN_APIID+1]; // 32 character string
 		char apiSecret[LEN_APISECRET+1]; // 64 character string
 		uint32_t zip;

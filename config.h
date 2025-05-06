@@ -41,7 +41,7 @@
 
 // Weather Underground
 // IMPORTANT: Do not use. No longer working.
-//#define WEATHER_WUNDERGROUND
+#define WEATHER_WUNDERGROUND
 
 // END WEATHER PROVIDER SECTION
 
