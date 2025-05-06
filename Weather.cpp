@@ -44,9 +44,10 @@ int16_t Weather::GetScale(const ReturnVals & vals) const
 		return 100;
 
 	// Load biases from EEPROM if available
-	int temp_bias = (int16_t)eeprom_read_word((uint16_t*)1170); // ADDR_TEMP_BIAS
-	int humid_bias = (int16_t)eeprom_read_word((uint16_t*)1172); // ADDR_HUMIDITY_BIAS
-	int rain_bias = (int16_t)eeprom_read_word((uint16_t*)1174); // ADDR_RAIN_BIAS
+	int temp_bias = (int16_t)(EEPROM.read(1170) | (EEPROM.read(1171) << 8));
+	int humid_bias = (int16_t)(EEPROM.read(1172) | (EEPROM.read(1173) << 8)); // ADDR_HUMIDITY_BIAS
+	int rain_bias  = (int16_t)(EEPROM.read(1174) | (EEPROM.read(1175) << 8)); // ADDR_RAIN_BIAS
+
 
 	const int avgHumidity = (vals.maxhumidity + vals.minhumidity) / 2;
 

@@ -329,11 +329,23 @@ bool SetSettings(const KVPairs & key_value_pairs)
 			SetUsePWS(strcmp(value, "pws") == 0);
 		}
 		else if (strcmp(key, "bias_temp") == 0)
-			eeprom_write_word((uint16_t*)1170, atoi(value));
+		{
+			uint16_t v = atoi(value);
+			EEPROM.write(1170, v & 0xFF);
+			EEPROM.write(1171, (v >> 8) & 0xFF);
+		}
 		else if (strcmp(key, "bias_humid") == 0)
-			eeprom_write_word((uint16_t*)1172, atoi(value));
+		{
+			uint16_t v = atoi(value);
+			EEPROM.write(1172, v & 0xFF);
+			EEPROM.write(1173, (v >> 8) & 0xFF);
+		}
 		else if (strcmp(key, "bias_rain") == 0)
-			eeprom_write_word((uint16_t*)1174, atoi(value));
+		{
+			uint16_t v = atoi(value);
+			EEPROM.write(1174, v & 0xFF);
+			EEPROM.write(1175, (v >> 8) & 0xFF);
+		}
 
 	}
 	return true;
@@ -647,38 +659,27 @@ int GetNumEnabledZones()
 }
 
 int16_t GetTempBias() {
-	return (int16_t)eeprom_read_word((uint16_t*)ADDR_TEMP_BIAS);
+	return (int16_t)(EEPROM.read(ADDR_TEMP_BIAS) | (EEPROM.read(ADDR_TEMP_BIAS + 1) << 8));
 }
 void SetTempBias(int16_t bias) {
-	eeprom_write_word((uint16_t*)ADDR_TEMP_BIAS, bias);
+	EEPROM.write(ADDR_TEMP_BIAS, bias & 0xFF);
+	EEPROM.write(ADDR_TEMP_BIAS + 1, (bias >> 8) & 0xFF);
 }
 
 int16_t GetHumidityBias() {
-	return (int16_t)eeprom_read_word((uint16_t*)ADDR_HUMIDITY_BIAS);
+	return (int16_t)(EEPROM.read(ADDR_HUMIDITY_BIAS) | (EEPROM.read(ADDR_HUMIDITY_BIAS + 1) << 8));
 }
 void SetHumidityBias(int16_t bias) {
-	eeprom_write_word((uint16_t*)ADDR_HUMIDITY_BIAS, bias);
+	EEPROM.write(ADDR_HUMIDITY_BIAS, bias & 0xFF);
+	EEPROM.write(ADDR_HUMIDITY_BIAS + 1, (bias >> 8) & 0xFF);
 }
 
 int16_t GetRainBias() {
-	return (int16_t)eeprom_read_word((uint16_t*)ADDR_RAIN_BIAS);
+	return (int16_t)(EEPROM.read(ADDR_RAIN_BIAS) | (EEPROM.read(ADDR_RAIN_BIAS + 1) << 8));
 }
 void SetRainBias(int16_t bias) {
-	eeprom_write_word((uint16_t*)ADDR_RAIN_BIAS, bias);
-}
-
-uint16_t eeprom_read_word(uint16_t* address) {
-	uint16_t addr = (uint16_t)address;
-	uint16_t val = 0;
-	val |= EEPROM.read(addr);
-	val |= EEPROM.read(addr + 1) << 8;
-	return val;
-}
-
-void eeprom_write_word(uint16_t* address, uint16_t value) {
-	uint16_t addr = (uint16_t)address;
-	EEPROM.write(addr, value & 0xFF);
-	EEPROM.write(addr + 1, value >> 8);
+	EEPROM.write(ADDR_RAIN_BIAS, bias & 0xFF);
+	EEPROM.write(ADDR_RAIN_BIAS + 1, (bias >> 8) & 0xFF);
 }
 
 
