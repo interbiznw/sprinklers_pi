@@ -124,6 +124,9 @@ bool Logging::LogZoneEvent(time_t start, int zone, int duration, int schedule, i
 		return false;
 	}
 
+	Schedule sched;
+	char scheduleName[sizeof(sched.name)] = "Unnamed Schedule";
+
 	// Log to NTFY
 	trace(F("Logging Zone Event: zone %d, schedule %d, duration %d\n"), zone, schedule, duration);
 
@@ -139,8 +142,7 @@ bool Logging::LogZoneEvent(time_t start, int zone, int duration, int schedule, i
 	}
 
 	// Get schedule name
-	Schedule sched;
-	char scheduleName[sizeof(sched.name)] = "Unnamed Schedule";
+
 
 	if (schedule <= 0 || schedule > MAX_SCHEDULES) {
 			trace(F("Schedule index %d out of range.\n"), schedule);
