@@ -44,13 +44,27 @@ int16_t Weather::GetScale(const ReturnVals & vals) const
 
 	const int avgHumidity = (vals.maxhumidity + vals.minhumidity) / 2;
 
-	// Adjustments centered around 65°F, 58% humidity average
-	const int humid_factor = (58 - avgHumidity);           // ~1% per % deviation
-	const int temp_factor = (vals.meantempi - 65) * 2;     // Was *4, now *2
-	const int rain_factor = (vals.precipi + vals.precip_today) * -1; // Was -2 per hundredth
+	// Pacific NW tuning:
+	// - Less penalty for humidity >60%
+	// - Temperature baseline 70°F, mild effect ±1.5%/°F
+	// - Rain under 0.05" is ignored, above that is -1.5% per 0.01"
+
+	int humid_factor = 0;
+	if (avgHumidity < 45)
+		humid_factor = (58 - avgHumidity);  // +1% per % below 58
+	else if (avgHumidity > 65)
+		humid_factor = (58 - avgHumidity) / 2; // -0.5% per % above 58
+
+	const int temp_factor = (vals.meantempi - 70) * 1.5;  // mild impact
+
+	float totalPrecipInches = (vals.precipi + vals.precip_today) / 100.0f;
+	int rain_factor = 0;
+	if (totalPrecipInches > 0.05f)
+		rain_factor = (int)(totalPrecipInches * -150.0f);  // -1.5% per 0.01" above 0.05"
 
 	const int adj = spi_min(spi_max(0, 100 + humid_factor + temp_factor + rain_factor), 200);
-	trace(F("Adjusting H(%d)T(%d)R(%d):%d\n"), humid_factor, temp_factor, rain_factor, adj);
+
+	trace(F("PNW Adjust: H(%d) T(%d) R(%d) => %d%%\n"), humid_factor, temp_factor, rain_factor, adj);
 	return adj;
 }
 
