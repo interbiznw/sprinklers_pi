@@ -83,7 +83,14 @@ Weather::ReturnVals Wunderground::InternalGetVals(const Weather::Settings & sett
 		ret.valid = false;
 	}
 
-	ret.resolvedIP = "(null)";
+	trace("Parsed WU: Temp=%d, MinHum=%d, MaxHum=%d, Precip=%.2f, Wind=%.2f\n",
+		ret.meantempi, ret.minhumidity, ret.maxhumidity,
+		ret.precipi / 100.0f, ret.windmph / 10.0f);
+
+	char* ip;
+	curl_easy_getinfo(curl, CURLINFO_PRIMARY_IP, &ip);
+	if (ip) ret.resolvedIP = ip;
+
 	return ret;
 }
 
