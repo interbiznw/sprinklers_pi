@@ -365,7 +365,24 @@ bool SetSettings(const KVPairs & key_value_pairs)
 			trace("SetSettings(): Writing bias_temp=%d to EEPROM\n", v);
 			SetTempBias(v);
 		}
-
+		else if (strcmp(key, "bias_humid") == 0) {
+			if (value == NULL || strlen(value) == 0) {
+				trace("ERROR: bias_humid value missing or null\n");
+				return false;
+			}
+			int16_t v = atoi(value);
+			trace("SetSettings(): Writing bias_humid=%d to EEPROM\n", v);
+			SetHumidityBias(v);
+		}
+		else if (strcmp(key, "bias_rain") == 0) {
+			if (value == NULL || strlen(value) == 0) {
+				trace("ERROR: bias_rain value missing or null\n");
+				return false;
+			}
+			int16_t v = atoi(value);
+			trace("SetSettings(): Writing bias_rain=%d to EEPROM\n", v);
+			SetRainBias(v);
+		}
 
 
 ////		else
