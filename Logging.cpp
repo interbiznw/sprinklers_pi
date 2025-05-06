@@ -114,43 +114,57 @@ bool Logging::LogZoneEvent(time_t start, int zone, int duration, int schedule, i
 	char* zErrMsg = 0;
 	char sSQL[100];
 	snprintf(sSQL, sizeof(sSQL),
-			"INSERT INTO zonelog VALUES(%ld, %d, %d, %d, %d, %d);",
-			start, zone, duration, schedule, sadj, wunderground);
+		"INSERT INTO zonelog VALUES(%ld, %d, %d, %d, %d, %d);",
+		start, zone, duration, schedule, sadj, wunderground);
 	sSQL[sizeof(sSQL) - 1] = '\0';
 
 	if (sqlite3_exec(m_db, sSQL, NULL, NULL, &zErrMsg) != SQLITE_OK) {
-			trace("SQL Error (%s)\n", zErrMsg);
-			sqlite3_free(zErrMsg);
-			return false;
+		trace("SQL Error (%s)\n", zErrMsg);
+		sqlite3_free(zErrMsg);
+		return false;
 	}
 
-	// Log to NTFY
 	trace(F("Logging Zone Event: zone %d, schedule %d, duration %d\n"), zone, schedule, duration);
 
+	// Load zone name
 	FullZone z;
 	const char* zoneName;
-
 	if (zone >= 0 && zone < NUM_ZONES) {
-			LoadZone(zone, &z);
-			zoneName = z.name;
-			trace(F("Loaded Zone name: %s\n"), zoneName);
+		LoadZone(zone, &z);
+		zoneName = z.name[0] ? z.name : "Unnamed Zone";
+		trace(F("Loaded Zone name: %s\n"), zoneName);
 	} else {
-			zoneName = "Unknown";
-			trace(F("Zone index %d out of range. Using fallback name.\n"), zone);
+		zoneName = "Unknown";
+		trace(F("Zone index %d out of range. Using fallback name.\n"), zone);
 	}
 
+	// Load schedule name
+	Schedule sched;
+	const char* schedName;
+	if (schedule >= 0 && schedule < MAX_SCHEDULES) {
+		LoadSchedule(schedule, &sched);
+		schedName = sched.name[0] ? sched.name : "Unnamed Schedule";
+		trace(F("Loaded Schedule name: %s\n"), schedName);
+	} else {
+		schedName = "Unknown";
+		trace(F("Schedule index %d out of range. Using fallback name.\n"), schedule);
+	}
+
+	// Build and send curl command to NTFY
 	char cmd[512];
 	snprintf(cmd, sizeof(cmd),
-			"curl -H \"Authorization: Bearer tk_jjldqavvt53ik5zm5pg86c928olen\" "
-			"-H \"Title: %s ended\" "
-			"-d \"Zone %s (%d sec, Schedule %d)\" "
-			"https://ntfy.interbiznw.dev/Irrigation",
-			zoneName, zoneName, duration, schedule);
+		"curl -H \"Authorization: Bearer tk_jjldqavvt53ik5zm5pg86c928olen\" "
+		"-H \"Title: %s ended\" "
+		"-d \"Zone %s (%d sec, Schedule %d: %s)\" "
+		"https://ntfy.interbiznw.dev/Irrigation",
+		zoneName, zoneName, duration, schedule + 1, schedName);  // display 1-based schedule
 
+	cmd[sizeof(cmd) - 1] = '\0';
 	system(cmd);
 
 	return true;
 }
+
 
 
 static void DumpData(FILE * stream_file, uint32_t bin_data[], uint32_t bins, uint32_t bin_scale, uint32_t bin_offset, bool bMil)
