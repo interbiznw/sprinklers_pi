@@ -7,6 +7,7 @@
 #include "Wunderground.h"
 #include "core.h"
 #include "port.h"
+#include "settings.h"  // Add this to access EEPROM variables
 #include <string>
 #include <sstream>
 #include <curl/curl.h>
@@ -82,6 +83,11 @@ Weather::ReturnVals Wunderground::InternalGetVals(const Weather::Settings & sett
 		if (obs.isMember("humidityHigh")) ret.maxhumidity = obs["humidityAvg"].asInt();
 		ret.maxhumidity = 85; // 🔧 Hardcoded for test
 		if (obs.isMember("uvHigh")) ret.UV = static_cast<int16_t>(obs["uvHigh"].asFloat() * 10.0f);
+
+		// Load tuning parameters from EEPROM (stored as int16_t)
+		ret.temp_bias = (int16_t)eeprom_read_word((uint16_t*)1170); // ADDR_TEMP_BIAS
+		ret.humid_bias = (int16_t)eeprom_read_word((uint16_t*)1172); // ADDR_HUMIDITY_BIAS
+		ret.rain_bias = (int16_t)eeprom_read_word((uint16_t*)1174); // ADDR_RAIN_BIAS
 
 	} catch (const std::exception& e) {
 		trace("Error extracting fields: %s\n", e.what());

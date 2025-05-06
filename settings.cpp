@@ -328,6 +328,12 @@ bool SetSettings(const KVPairs & key_value_pairs)
 		{
 			SetUsePWS(strcmp(value, "pws") == 0);
 		}
+		else if (strcmp(key, "bias_temp") == 0)
+			eeprom_write_word((uint16_t*)1170, atoi(value));
+		else if (strcmp(key, "bias_humid") == 0)
+			eeprom_write_word((uint16_t*)1172, atoi(value));
+		else if (strcmp(key, "bias_rain") == 0)
+			eeprom_write_word((uint16_t*)1174, atoi(value));
 
 	}
 	return true;
@@ -639,6 +645,28 @@ int GetNumEnabledZones()
 	}
 	return retval;
 }
+
+int16_t GetTempBias() {
+	return (int16_t)eeprom_read_word((uint16_t*)ADDR_TEMP_BIAS);
+}
+void SetTempBias(int16_t bias) {
+	eeprom_write_word((uint16_t*)ADDR_TEMP_BIAS, bias);
+}
+
+int16_t GetHumidityBias() {
+	return (int16_t)eeprom_read_word((uint16_t*)ADDR_HUMIDITY_BIAS);
+}
+void SetHumidityBias(int16_t bias) {
+	eeprom_write_word((uint16_t*)ADDR_HUMIDITY_BIAS, bias);
+}
+
+int16_t GetRainBias() {
+	return (int16_t)eeprom_read_word((uint16_t*)ADDR_RAIN_BIAS);
+}
+void SetRainBias(int16_t bias) {
+	eeprom_write_word((uint16_t*)ADDR_RAIN_BIAS, bias);
+}
+
 
 Schedule quickSchedule;
 

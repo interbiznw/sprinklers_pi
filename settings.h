@@ -39,6 +39,9 @@
 #define ADDR_LOC				1119
 #define LEN_LOC					50
 #define ADDR_					1169
+#define ADDR_TEMP_BIAS      1170
+#define ADDR_HUMIDITY_BIAS  1172
+#define ADDR_RAIN_BIAS      1174
 
 #define SCHEDULE_OFFSET 1200
 #define SCHEDULE_INDEX 60
@@ -186,6 +189,12 @@ struct ShortZone
 
 ////////////////////
 //  EEPROM Getter/Setters
+int16_t GetTempBias();
+void SetTempBias(int16_t bias);
+int16_t GetHumidityBias();
+void SetHumidityBias(int16_t bias);
+int16_t GetRainBias();
+void SetRainBias(int16_t bias);
 void SetNumSchedules(uint8_t iNum);
 uint8_t GetNumSchedules();
 void SetNTPOffset(const int8_t value);

@@ -29,6 +29,11 @@
 #include "Event.h"
 #include <unistd.h>
 #include "core.h"
+#include <avr/eeprom.h> // Include for eeprom_read_word
+
+#define ADDR_TEMP_BIAS 1170
+#define ADDR_HUMIDITY_BIAS 1172
+#define ADDR_RAIN_BIAS 1174
 
 web::web(void)
 		: m_server(0)
@@ -265,6 +270,9 @@ static void JSONSettings(const KVPairs & key_value_pairs, FILE * stream_file)
 	fprintf_P(stream_file, PSTR("\t\"loc\" : \"%s\",\n"), settings.location);
 #endif
 	// leave this value last, it has no comma after the value
+	fprintf_P(stream_file, PSTR("\t\"bias_temp\" : \"%d\",\n"), (int16_t)eeprom_read_word((uint16_t*)ADDR_TEMP_BIAS));
+	fprintf_P(stream_file, PSTR("\t\"bias_humid\" : \"%d\",\n"), (int16_t)eeprom_read_word((uint16_t*)ADDR_HUMIDITY_BIAS));
+	fprintf_P(stream_file, PSTR("\t\"bias_rain\" : \"%d\",\n"), (int16_t)eeprom_read_word((uint16_t*)ADDR_RAIN_BIAS));
 	fprintf_P(stream_file, PSTR("\t\"sadj\" : \"%ld\"\n"), (long) GetSeasonalAdjust());
 	fprintf(stream_file, "}");
 }
