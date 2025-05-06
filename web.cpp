@@ -246,7 +246,7 @@ static void JSONSettings(const KVPairs & key_value_pairs, FILE * stream_file)
 #if defined(WEATHER_WUNDERGROUND)
 	char fullApiKey[LEN_APIKEY + 1];
 	GetApiKey(fullApiKey);
-	fprintf_P(stream_file, PSTR("\\t\\"apikey\\" : \\"%s\\",\\n"), fullApiKey);
+	fprintf_P(stream_file, PSTR("\t\"apikey\" : \"%s\",\n"), fullApiKey);
 	fprintf_P(stream_file, PSTR("\t\"wutype\" : \"%s\",\n"), settings.usePws ? "pws" : "zip");
 	fprintf_P(stream_file, PSTR("\t\"zip\" : \"%ld\",\n"), (long) settings.zip);
 	fprintf_P(stream_file, PSTR("\t\"pws\" : \"%s\",\n"), settings.pws);
