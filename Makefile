@@ -5,7 +5,9 @@ VERSION := $(shell cat version.txt )
 
 BUILD_DIR=build
 CC=gcc
-CCFLAGS=-O3 -Wall -fmessage-length=0 -MMD -MP -DLOGGING -DVERSION=\"$(VERSION)\" -Wno-psabi -std=c++11 
+# CCFLAGS=-O3 -Wall -fmessage-length=0 -MMD -MP -DLOGGING -DVERSION=\"$(VERSION)\" -Wno-psabi -std=c++11 
+CFLAGS=-O3 -Wall -fmessage-length=0 -MMD -MP -DLOGGING -DVERSION=\"$(VERSION)\" -Wno-psabi -std=c++11 -I/usr/include/jsoncpp
+
 
 CPP_SRCS += \
 Event.cpp \
@@ -22,7 +24,7 @@ sprinklers_pi.cpp \
 sysreset.cpp \
 web.cpp 
 
-LIBS := -lsqlite3 -lwiringPi
+LIBS := -lsqlite3 -lwiringPi -ljsoncpp -lcurl
 LIBNAME=sprinklers_pi
 
 OBJS=$(CPP_SRCS:%.cpp=$(BUILD_DIR)/%.o)
@@ -41,7 +43,7 @@ ${BUILD_DIR}:
 	mkdir -p ${BUILD_DIR}
 
 $(BUILD_DIR)/%.o: %.cpp
-	$(CC) $(CCFLAGS) -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -c -o "$@" "$<"
+	$(CC) $(CFLAGS) -c -o "$@" "$<"
 
 .PHONY: build_dir
 
