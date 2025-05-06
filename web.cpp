@@ -35,6 +35,27 @@
 #define ADDR_HUMIDITY_BIAS 1172
 #define ADDR_RAIN_BIAS 1174
 
+// Splits "a=1&b=2&c=3" into key_value_pairs
+static void parseQueryString(const char *qs, KVPairs &kv) {
+  kv.num_pairs = 0;
+  while (kv.num_pairs < NUM_KEY_VALUES && *qs) {
+    const char *eq = strchr(qs, '=');
+    if (!eq) break;
+    int keylen = eq - qs;
+    strncpy(kv.keys[kv.num_pairs], qs, keylen);
+    kv.keys[kv.num_pairs][keylen] = '\0';
+
+    const char *amp = strchr(eq+1, '&');
+    int vallen = amp ? (amp - (eq+1)) : strlen(eq+1);
+    strncpy(kv.values[kv.num_pairs], eq+1, vallen);
+    kv.values[kv.num_pairs][vallen] = '\0';
+
+    kv.num_pairs++;
+    if (!amp) break;
+    qs = amp + 1;
+  }
+}
+
 web::web(void)
 		: m_server(0)
 {
@@ -46,6 +67,9 @@ web::~web(void)
 		delete m_server;
 	m_server = 0;
 }
+
+
+
 
 bool web::Init()
 {
@@ -689,6 +713,10 @@ static bool ParseHTTPHeader(EthernetClient & client, KVPairs * key_value_pairs, 
 		}
 		char c = *(recvbufptr++);
 		//Serial.print(c);
+		if (c == '\r') {
+			// ignore bare carriage returns so they don't drive you into ERROR
+			continue;
+	}
 
 		switch (current_state)
 		{
@@ -919,15 +947,18 @@ void web::ProcessWebClients()
 				else
 					ServeError(pFile);
 			}
-			else if (strcmp(sPage, "bin/settings") == 0)
-			{
-				if (SetSettings(key_value_pairs))
-				{
-					ReloadEvents();
-					ServeHeader(pFile, 200, "OK", false);
+			else if (strcmp(sPage, "bin/settings") == 0) {
+				// bypass ParseHTTPHeader kvs for settings: grab raw GET line
+				// (assumes you stored it in a buffer called `requestLine`)
+				char *q = strchr(requestLine, '?');
+				if (q) {
+					q++;                               // move past '?'
+					parseQueryString(q, key_value_pairs);
 				}
-				else
-					ServeError(pFile);
+				// now key_value_pairs contains all bias_temp, bias_humid, bias_rain, etc.
+				SetSettings(key_value_pairs);
+				ReloadEvents();
+				ServeHeader(pFile, 200, "OK", false);
 			}
 			else if (strcmp(sPage, "bin/manual") == 0)
 			{
