@@ -110,6 +110,7 @@ void Logging::Close()
 
 bool Logging::LogZoneEvent(time_t start, int zone, int duration, int schedule, int sadj, int wunderground)
 {
+	Weather::Settings settings = Weather::GetSettings();
 	char * zErrMsg = 0;
 	char sSQL[100];
 	snprintf(sSQL, sizeof(sSQL), "INSERT INTO zonelog VALUES(%ld, %d, %d, %d, %d, %d);", start, zone, duration, schedule, sadj, wunderground);
