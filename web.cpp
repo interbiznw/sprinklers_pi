@@ -921,14 +921,13 @@ void web::ProcessWebClients()
 			}
 			else if (strcmp(sPage, "bin/settings") == 0)
 			{
-					trace("🔧 bin/settings triggered — calling SetSettings()\n");
-					if (SetSettings(key_value_pairs))
-					{
-							ReloadEvents();
-							ServeHeader(pFile, 200, "OK", false);
-					}
-					else
-							ServeError(pFile);
+				if (SetSettings(key_value_pairs))
+				{
+					ReloadEvents();
+					ServeHeader(pFile, 200, "OK", false);
+				}
+				else
+					ServeError(pFile);
 			}
 			else if (strcmp(sPage, "bin/manual") == 0)
 			{

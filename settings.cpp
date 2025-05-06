@@ -261,25 +261,25 @@ bool SetZones(const KVPairs & key_value_pairs)
 
 bool SetSettings(const KVPairs & key_value_pairs)
 {
-	//trace(">>> Entering SetSettings with %d pairs <<<\n", key_value_pairs.num_pairs);
-	trace("💥 ENTERED SetSettings from settings.cpp (bias logger build) 💥\n");
+	////trace(">>> Entering SetSettings with %d pairs <<<\n", key_value_pairs.num_pairs);
+	////trace("💥 ENTERED SetSettings from settings.cpp (bias logger build) 💥\n");
 	for (int i = 0; i < key_value_pairs.num_pairs; i++)
 	{
 
 		const char * key = key_value_pairs.keys[i];
 		const char * value = key_value_pairs.values[i];
 
-		if (key == NULL || strlen(key) == 0) {
-			trace("Skipping empty/null key\n");
-			continue;
-	}
-	if (value == NULL) {
-			trace("Skipping key %s due to NULL value\n", key);
-			continue;
-	}
+////		if (key == NULL || strlen(key) == 0) {
+////			trace("Skipping empty/null key\n");
+////			continue;
+////	}
+////	if (value == NULL) {
+////			trace("Skipping key %s due to NULL value\n", key);
+////			continue;
+////	}
 
 		// <<< ADD THIS printf >>>
-    trace("SetSettings received key: %s, value: %s\n", key, value ? value : "NULL");
+////    trace("SetSettings received key: %s, value: %s\n", key, value ? value : "NULL");
 		if (strcmp(key, "ip") == 0)
 		{
 			SetIP(decodeIP(value));
@@ -357,13 +357,13 @@ bool SetSettings(const KVPairs & key_value_pairs)
 			trace("Processed key: %s\n", key);
 		}
 
-		else
-		{
-				trace("Unknown key encountered: %s\n", key);
-				// Either ignore or return false
-				// return false;
-
-		}
+////		else
+////		{
+////				trace("Unknown key encountered: %s\n", key);
+////				// Either ignore or return false
+////				// return false;
+////
+////		}
 
 	}
 	return true;
