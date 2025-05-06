@@ -8,6 +8,7 @@
 #include "port.h"
 #include <string.h>
 #include <stdlib.h>
+#include "Logging.h"
 
 Schedule::Schedule() : m_type(0), day(0)
 {
