@@ -262,7 +262,7 @@ static runStateClass::DurationAdjustments AdjustDurations(Schedule * sched)
 #elif defined(WEATHER_DARKSKY)
 		DarkSky w;
 #elif defined(WEATHER_OPENWEATHER)
-        OpenWeather w;
+		OpenWeather w;
 #else
 		// this is a dummy provider which will just result in 100
 		Weather w;
@@ -274,9 +274,9 @@ static runStateClass::DurationAdjustments AdjustDurations(Schedule * sched)
 	long scale = ((long)adj.seasonal * (long)adj.wunderground) / 100;
 
 	for (uint8_t k = 0; k < NUM_ZONES; k++) {
-			trace("Original duration for zone %d: %d\n", k+1, sched->zone_duration[k]);
-			sched->zone_duration[k] = (uint8_t)spi_min(((long)sched->zone_duration[k] * scale + 50) / 100, 255);
-			trace("Adjusted duration for zone %d: %d (scale: %ld)\n", k+1, sched->zone_duration[k], scale);
+		trace("Original duration for zone %d: %d\n", k+1, sched->zone_duration[k]);
+		sched->zone_duration[k] = (uint8_t)spi_min(((long)sched->zone_duration[k] * scale + 50) / 100, 255);
+		trace("Adjusted duration for zone %d: %d (scale: %ld)\n", k+1, sched->zone_duration[k], scale);
 	}
 
 	return adj;
@@ -292,13 +292,8 @@ void LoadSchedTimeEvents(uint8_t sched_num, bool bQuickSchedule)
 		const uint8_t iNumSchedules = GetNumSchedules();
 		if ((sched_num < 0) || (sched_num >= iNumSchedules))
 			return;
-			LoadSchedule(sched_num, &sched);
-			adj = AdjustDurations(&sched);
-			trace("Adding eventtttt for zone %d with duration %d\n", k+1, sched.zone_duration[k]);
-
-
-			// Save back the adjusted durations so the event system uses them
-			SaveSchedule(sched_num, &sched);
+		LoadSchedule(sched_num, &sched);
+		adj=AdjustDurations(&sched);
 	}
 	else
 		sched = quickSchedule;
