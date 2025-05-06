@@ -265,6 +265,8 @@ bool SetSettings(const KVPairs & key_value_pairs)
 	{
 		const char * key = key_value_pairs.keys[i];
 		const char * value = key_value_pairs.values[i];
+		// <<< ADD THIS printf >>>
+    printf("SetSettings: saw key=\"%s\" value=\"%s\"\n", key, value);
 		if (strcmp(key, "ip") == 0)
 		{
 			SetIP(decodeIP(value));
@@ -349,7 +351,7 @@ bool SetSettings(const KVPairs & key_value_pairs)
 		}
 		else {
       // just ignore unknown settings
-      DEBUG_PRINT("Skipping unknown key: %s\n", key);
+      //DEBUG_PRINT("Skipping unknown key: %s\n", key);
     }
 
 	}
