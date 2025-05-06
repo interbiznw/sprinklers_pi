@@ -342,6 +342,8 @@ bool SetSettings(const KVPairs & key_value_pairs)
 		{
 			SetUsePWS(strcmp(value, "pws") == 0);
 		}
+		trace("Reached bias_temp block. value: %s\n", value ? value : "NULL");
+
 		else if (strcmp(key, "bias_temp") == 0)
 		{
 				if (value == NULL || strlen(value) == 0) {
@@ -695,6 +697,7 @@ int16_t GetTempBias() {
 	return (int16_t)(EEPROM.read(ADDR_TEMP_BIAS) | (EEPROM.read(ADDR_TEMP_BIAS + 1) << 8));
 }
 void SetTempBias(int16_t bias) {
+	trace("SetTempBias(): storing %d into EEPROM\n", bias);
 	EEPROM.write(ADDR_TEMP_BIAS, bias & 0xFF);
 	EEPROM.write(ADDR_TEMP_BIAS + 1, (bias >> 8) & 0xFF);
 }
@@ -703,6 +706,7 @@ int16_t GetHumidityBias() {
 	return (int16_t)(EEPROM.read(ADDR_HUMIDITY_BIAS) | (EEPROM.read(ADDR_HUMIDITY_BIAS + 1) << 8));
 }
 void SetHumidityBias(int16_t bias) {
+	trace("SetHumidityBias(): storing %d into EEPROM\n", bias);
 	EEPROM.write(ADDR_HUMIDITY_BIAS, bias & 0xFF);
 	EEPROM.write(ADDR_HUMIDITY_BIAS + 1, (bias >> 8) & 0xFF);
 }
@@ -711,6 +715,7 @@ int16_t GetRainBias() {
 	return (int16_t)(EEPROM.read(ADDR_RAIN_BIAS) | (EEPROM.read(ADDR_RAIN_BIAS + 1) << 8));
 }
 void SetRainBias(int16_t bias) {
+	trace("SetRainBias(): storing %d into EEPROM\n", bias);
 	EEPROM.write(ADDR_RAIN_BIAS, bias & 0xFF);
 	EEPROM.write(ADDR_RAIN_BIAS + 1, (bias >> 8) & 0xFF);
 }
