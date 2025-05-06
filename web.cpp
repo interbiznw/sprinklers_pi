@@ -10,8 +10,6 @@
 #include "nntp.h"
 #endif
 
-#include <avr/eeprom.h>
-
 #if defined(WEATHER_WUNDERGROUND)
 #include "Wunderground.h"
 #elif defined(WEATHER_AERIS)
