@@ -140,13 +140,13 @@ bool Logging::LogZoneEvent(time_t start, int zone, int duration, int schedule, i
 
 	// Get schedule name
 	Schedule sched;
-	const char* schedName;
-	if (schedule >= 0 && schedule < GetNumSchedules()) {
+	const char* schedName = "Invalid Schedule";
+
+	if (schedule >= 0 && schedule < MAX_SCHEDULES) {
 		LoadSchedule(schedule, &sched);
 		schedName = sched.name[0] ? sched.name : "Unnamed Schedule";
 		trace(F("Loaded Schedule name: %s\n"), schedName);
 	} else {
-		schedName = "Invalid Schedule";
 		trace(F("Schedule index %d out of range.\n"), schedule);
 	}
 
