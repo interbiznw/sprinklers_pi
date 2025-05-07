@@ -197,7 +197,7 @@ void SetHumidityBias(int16_t bias);
 int16_t GetRainBias();
 void SetRainBias(int16_t bias);
 int16_t GetTempBaseline();
-void SetTempBaseline(int16_t baseline);
+void SetTempBaseline(int16_t bias);
 
 void SetNumSchedules(uint8_t iNum);
 uint8_t GetNumSchedules();
