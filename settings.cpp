@@ -783,10 +783,10 @@ int16_t GetTempBaseline() {
 	return val;
 }
 
-void SetTempBaseline(int16_t baseline) {
-	trace("SetTempBaseline(): storing %d into EEPROM\n", baseline);
-	EEPROM.write(ADDR_TEMP_BASELINE, baseline	& 0xFF);
-	EEPROM.write(ADDR_TEMP_BASELINE + 1, (baseline >> 8) & 0xFF);
+void SetTempBaseline(int16_t bias) {
+	trace("SetTempBaseline(): storing %d into EEPROM\n", bias);
+	EEPROM.write(ADDR_TEMP_BASELINE, bias & 0xFF);
+	EEPROM.write(ADDR_TEMP_BASELINE + 1, (bias >> 8) & 0xFF);
 }
 
 void DumpBiasEEPROM() {
