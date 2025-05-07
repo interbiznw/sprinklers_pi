@@ -15,31 +15,62 @@
 <div data-role="page" id="settings">
   <script type="text/javascript">
 
-    $('#settings').on('pagebeforeshow', function () {
-      $.ajax("json/settings", {dataType: "json", success: function (data) {
-          $('#settings div[data-role="fieldcontain"]').css('display','none');
-          NV(data, 'ip');
-          NV(data, 'netmask');
-          NV(data, 'gateway');
-          NV(data, 'wuip');
-          NV(data, 'apikey');
-          NV(data, 'apiid');
-          NV(data, 'apisecret');
-          NV(data, 'wutype');
-          NV(data, 'zip');
-          NV(data, 'pws');
-          NV(data, 'loc');
-          NV(data, 'NTPip');
-          NV(data, 'NTPoffset');
-          NV(data, 'ot');
-          NV(data, 'webport');
-          NV(data, 'sadj');
-          NV(data, 'bias_temp');
-          NV(data, 'bias_humid');
-          NV(data, 'bias_rain');
+$('#settings').on('pagebeforeshow', function () {
+    $.ajax("json/settings", {
+        dataType: "json",
+        success: function (data) {
+            console.log("Settings data received:", data);  // Log the received data
 
-        }});
+            $('#settings div[data-role="fieldcontain"]').css('display','none');
+
+            // Log each variable as it is passed to the NV function
+            console.log("IP:", data.ip);
+            console.log("Netmask:", data.netmask);
+            console.log("Gateway:", data.gateway);
+            console.log("WU IP:", data.wuip);
+            console.log("API Key:", data.apikey);
+            console.log("API ID:", data.apiid);
+            console.log("API Secret:", data.apisecret);
+            console.log("WU Type:", data.wutype);
+            console.log("ZIP:", data.zip);
+            console.log("PWS:", data.pws);
+            console.log("Location:", data.loc);
+            console.log("NTP IP:", data.NTPip);
+            console.log("NTP Offset:", data.NTPoffset);
+            console.log("OT:", data.ot);
+            console.log("Web Port:", data.webport);
+            console.log("SADJ:", data.sadj);
+            console.log("Bias Temp:", data.bias_temp);
+            console.log("Bias Humid:", data.bias_humid);
+            console.log("Bias Rain:", data.bias_rain);
+
+            // Call NV function with the data
+            NV(data, 'ip');
+            NV(data, 'netmask');
+            NV(data, 'gateway');
+            NV(data, 'wuip');
+            NV(data, 'apikey');
+            NV(data, 'apiid');
+            NV(data, 'apisecret');
+            NV(data, 'wutype');
+            NV(data, 'zip');
+            NV(data, 'pws');
+            NV(data, 'loc');
+            NV(data, 'NTPip');
+            NV(data, 'NTPoffset');
+            NV(data, 'ot');
+            NV(data, 'webport');
+            NV(data, 'sadj');
+            NV(data, 'bias_temp');
+            NV(data, 'bias_humid');
+            NV(data, 'bias_rain');
+        },
+        error: function (xhr, status, error) {
+            console.error("Error fetching settings:", status, error);  // Log error if the request fails
+        }
     });
+});
+
 
     function NV(data, e) {
       if (e in data) {
@@ -158,6 +189,17 @@
         <label for="bias_temp">Temperature Bias</label>
         <input name="bias_temp" id="bias_temp" size="3" value="" />
       </div>
+
+      <div id="bias_humiddiv" data-role="fieldcontain">
+        <label for="bias_humid">Humidity Bias</label>
+        <input name="bias_humid" id="bias_humid" size="3" value="" />
+      </div>
+
+      <div id="bias_raindiv" data-role="fieldcontain">
+        <label for="bias_rain">Rain Bias</label>
+        <input name="bias_rain" id="bias_rain" size="3" value="" />
+      </div>
+
 
 
     </form>
