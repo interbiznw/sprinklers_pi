@@ -313,6 +313,7 @@ static void JSONwCheck(const KVPairs & key_value_pairs, FILE * stream_file)
 	fprintf_P(stream_file, PSTR("\t\"precip\" : \"%d\",\n"), vals.precipi);
 	fprintf_P(stream_file, PSTR("\t\"wind_mph\" : \"%d\",\n"), vals.windmph);
 	fprintf_P(stream_file, PSTR("\t\"tempAvg\" : \"%d\",\n"), vals.tempAvg);
+	fprintf_P(stream_file, PSTR("\t\"tempHigh\" : \"%d\",\n"), vals.tempHigh);
 	fprintf_P(stream_file, PSTR("\t\"UV\" : \"%d\",\n"), vals.UV);
 	fprintf_P(stream_file, PSTR("\t\"scale\" : \"%d\"\n"), scale);
 	fprintf(stream_file, "}");

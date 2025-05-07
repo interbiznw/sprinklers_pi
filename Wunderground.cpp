@@ -90,6 +90,7 @@ Weather::ReturnVals Wunderground::InternalGetVals(const Weather::Settings & sett
 		if (today.isMember("imperial")) {
 			const auto& imp = today["imperial"];
 			if (imp.isMember("tempAvg")) ret.tempAvg = static_cast<int16_t>(imp["tempAvg"].asInt());
+			if (imp.isMember("tempHigh")) ret.tempHigh = static_cast<int16_t>(imp["tempHigh"].asInt());
 			if (imp.isMember("precipTotal")) ret.precip_today = static_cast<int16_t>(imp["precipTotal"].asFloat() * 100.0f);
 		}
 		if (today.isMember("uvHigh")) ret.today_uv = static_cast<int16_t>(today["uvHigh"].asFloat() * 10.0f);

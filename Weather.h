@@ -41,6 +41,7 @@ public:
 		int16_t humid_bias;
 		int16_t rain_bias;
 		int16_t tempAvg;
+		int16_t tempHigh;
 		int16_t today_uv;
 	};
 	struct Settings
