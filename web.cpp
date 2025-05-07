@@ -674,7 +674,7 @@ static bool ParseHTTPHeader(EthernetClient & client, KVPairs * key_value_pairs, 
 	key_value_pairs->num_pairs = 0;
 	char * key_ptr = key_value_pairs->keys[0];
 	char * value_ptr = key_value_pairs->values[0];
-	char recvbuf[100];  // note:  trial and error has shown that it doesn't help to increase this number.. few ms at the most.
+	char recvbuf[512];  // note:  trial and error has shown that it doesn't help to increase this number.. few ms at the most.
 	char * recvbufptr = recvbuf;
 	char * recvbufend = recvbuf;
 	while (true)
@@ -850,6 +850,7 @@ static bool ParseHTTPHeader(EthernetClient & client, KVPairs * key_value_pairs, 
 		else if (current_state == ERROR)
 			return false;
 	} // true
+	trace("ParseHTTPHeader() failed. current_state = %d\n", current_state);
 	return false;
 }
 
