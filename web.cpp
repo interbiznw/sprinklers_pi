@@ -315,7 +315,7 @@ static void JSONwCheck(const KVPairs & key_value_pairs, FILE * stream_file)
 	fprintf_P(stream_file, PSTR("\t\"wind_mph\" : \"%d\",\n"), vals.windmph);
 	fprintf_P(stream_file, PSTR("\t\"tempAvg\" : \"%d\",\n"), vals.tempAvg);
 	fprintf_P(stream_file, PSTR("\t\"tempHigh\" : \"%d\",\n"), vals.tempHigh);
-	fprintf_P(stream_file, PSTR("\t\"avgHumidity_today\" : \"%d\",\n"), vals.avghumidity_today);
+	fprintf_P(stream_file, PSTR("\t\"avghumidity_today\" : \"%d\",\n"), vals.avghumidity_today);
 	fprintf_P(stream_file, PSTR("\t\"minhumidity_today\" : \"%d\",\n"), vals.minhumidity_today);
 	fprintf_P(stream_file, PSTR("\t\"maxhumidity_today\" : \"%d\",\n"), vals.maxhumidity_today);
 	fprintf_P(stream_file, PSTR("\t\"UV\" : \"%d\",\n"), vals.UV);
