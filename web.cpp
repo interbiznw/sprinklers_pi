@@ -31,10 +31,6 @@
 #include "core.h"
 
 
-#define ADDR_TEMP_BIAS 1170
-#define ADDR_HUMIDITY_BIAS 1172
-#define ADDR_RAIN_BIAS 1174
-
 web::web(void)
 		: m_server(0)
 {

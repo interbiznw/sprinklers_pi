@@ -34,6 +34,7 @@
                         wuText.append("<br/>Precipitation: " + data.precip / 100 + "\" / " + (data.precip * 0.254).toFixed(1) + " mm");
                         wuText.append("<br/>Wind: " + data.wind_mph / 10 + " mph / " + (data.wind_mph * 0.044704).toFixed(1) + " m/s");
                         wuText.append("<h3>Today's Values</h3>");
+                        wuText.append("Todays Mean Temp: " + data.tempAvg / 100 + "\" / " + (data.tempAvg * 0.254).toFixed(1) + " mm");
                         wuText.append("Precipitation: " + data.precip_today / 100 + "\" / " + (data.precip_today * 0.254).toFixed(1) + " mm");
                         wuText.append("<br/>UV: " + data.UV / 10 + " ");
                     }
