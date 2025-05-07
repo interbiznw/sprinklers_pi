@@ -743,9 +743,8 @@ int16_t GetHumidityBias() {
 void SetHumidityBias(int16_t bias) {
 	trace("Writing to EEPROM address %d and %d\n", ADDR_HUMIDITY_BIAS, ADDR_HUMIDITY_BIAS + 1);
 	trace("SetHumidityBias(): storing %d into EEPROM\n", bias);
-	trace("Dummy write: bias_humid = %d\n", bias);
-	//EEPROM.write(ADDR_HUMIDITY_BIAS, bias & 0xFF);
-	//EEPROM.write(ADDR_HUMIDITY_BIAS + 1, (bias >> 8) & 0xFF);
+	EEPROM.write(ADDR_HUMIDITY_BIAS, bias & 0xFF);
+	EEPROM.write(ADDR_HUMIDITY_BIAS + 1, (bias >> 8) & 0xFF);
 }
 
 int16_t GetRainBias() {
