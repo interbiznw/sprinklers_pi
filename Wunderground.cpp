@@ -85,16 +85,16 @@ Weather::ReturnVals Wunderground::InternalGetVals(const Weather::Settings & sett
 		ret.humid_bias = (int16_t)(EEPROM.read(ADDR_HUMIDITY_BIAS) | (EEPROM.read(ADDR_HUMIDITY_BIAS + 1) << 8));
 		ret.rain_bias = (int16_t)(EEPROM.read(ADDR_RAIN_BIAS) | (EEPROM.read(ADDR_RAIN_BIAS + 1) << 8));
 
-		// Today's data (index 6)
+		// Today's data (index 6) — parsed but NOT stored in `ret` as struct has no today_* fields
 		const Json::Value& today = json["summaries"][6];
 		if (today.isMember("imperial")) {
 			const auto& imp = today["imperial"];
-			if (imp.isMember("tempAvg")) ret.today_meantempi = imp["tempAvg"].asInt();
-			if (imp.isMember("precipTotal")) ret.today_precipi = imp["precipTotal"].asFloat() * 100.0f;
+			if (imp.isMember("tempAvg")) trace("Today's Mean Temp: %d\n", imp["tempAvg"].asInt());
+			if (imp.isMember("precipTotal")) trace("Today's Precip: %.2f\n", imp["precipTotal"].asFloat());
 		}
-		if (today.isMember("humidityLow")) ret.today_minhumidity = today["humidityLow"].asInt();
-		if (today.isMember("humidityHigh")) ret.today_maxhumidity = today["humidityAvg"].asInt();
-		if (today.isMember("uvHigh")) ret.today_uv = static_cast<int16_t>(today["uvHigh"].asFloat() * 10.0f);
+		if (today.isMember("humidityLow")) trace("Today's Min Humidity: %d\n", today["humidityLow"].asInt());
+		if (today.isMember("humidityHigh")) trace("Today's Max Humidity: %d\n", today["humidityAvg"].asInt());
+		if (today.isMember("uvHigh")) trace("Today's UV: %.1f\n", today["uvHigh"].asFloat());
 
 	} catch (const std::exception& e) {
 		trace("Error extracting fields: %s\n", e.what());
@@ -104,10 +104,6 @@ Weather::ReturnVals Wunderground::InternalGetVals(const Weather::Settings & sett
 	trace("Parsed WU: Temp=%d, MinHum=%d, MaxHum=%d, Precip=%.2f, Wind=%.2f, UV=%.1f\n",
 		ret.meantempi, ret.minhumidity, ret.maxhumidity,
 		ret.precipi / 100.0f, ret.windmph / 10.0f, ret.UV / 10.0f);
-
-	trace("Today WU: Temp=%d, MinHum=%d, MaxHum=%d, Precip=%.2f, UV=%.1f\n",
-		ret.today_meantempi, ret.today_minhumidity, ret.today_maxhumidity,
-		ret.today_precipi / 100.0f, ret.today_uv / 10.0f);
 
 	char* ip;
 	curl_easy_getinfo(curl, CURLINFO_PRIMARY_IP, &ip);
