@@ -60,12 +60,13 @@ int16_t Weather::GetScale(const ReturnVals & vals) const
 		humid_factor = (55 - avgHumidity) / 2;  // soften penalty if it's humid
 	humid_factor += humid_bias;
 
-	// 🌞 Temp: 70°F baseline. Add 5% per °F above, subtract 2% below
+	// 🌞 Temp: 70°F baseline. Blend mean and high temp. Weighted 70% mean, 30% high.
+	int blendedTemp = (int)((vals.meantempi * 0.7f) + (vals.tempHigh * 0.3f));
 	int temp_factor = 0;
-	if (vals.meantempi > 70)
-		temp_factor = (vals.meantempi - 70) * 5;
+	if (blendedTemp > 70)
+		temp_factor = (blendedTemp - 70) * 5;
 	else
-		temp_factor = (vals.meantempi - 70) * 2;
+		temp_factor = (blendedTemp - 70) * 2;
 	temp_factor += temp_bias;
 
 	// ☔ Rain: first 0.05" is ignored. Subtract 2.5% per 0.01" above
