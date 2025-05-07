@@ -72,16 +72,12 @@ Weather::ReturnVals Wunderground::InternalGetVals(const Weather::Settings & sett
 		if (obs.isMember("imperial")) {
 			const auto& imp = obs["imperial"];
 			if (imp.isMember("tempAvg")) ret.meantempi = imp["tempAvg"].asInt();
-			//ret.meantempi = 80; // 🔧 Hardcoded for test
 			if (imp.isMember("precipTotal")) ret.precipi = imp["precipTotal"].asFloat() * 100.0f;
-			//ret.precipi = 20; // 🔧 Hardcoded for test
 			if (imp.isMember("windspeedAvg")) ret.windmph = imp["windspeedAvg"].asFloat() * 10.0f;
 		}
 
 		if (obs.isMember("humidityLow")) ret.minhumidity = obs["humidityLow"].asInt();
-		//ret.minhumidity = 32; // 🔧 Hardcoded for test
 		if (obs.isMember("humidityHigh")) ret.maxhumidity = obs["humidityAvg"].asInt();
-		//ret.maxhumidity = 85; // 🔧 Hardcoded for test
 		if (obs.isMember("uvHigh")) ret.UV = static_cast<int16_t>(obs["uvHigh"].asFloat() * 10.0f);
 
 		// Load tuning parameters from EEPROM (stored as int16_t)
