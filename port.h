@@ -60,7 +60,7 @@ public:
 	void write(int addr, uint8_t);
 	void Store();
 private:
-	uint8_t m_buf[2122];
+	uint8_t m_buf[2200];
 	bool m_changed;
 };
 
