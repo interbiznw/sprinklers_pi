@@ -111,22 +111,31 @@ function NV(data, e) {
 }
 
 
-    function settingsSubmitForm() {
+function settingsSubmitForm() {
+  // Serialize the form data and log it
   const payload = $('#setForm').serialize();
-  console.log("Submitting settings:", payload);
+  console.log("Form data serialized:", payload);
+
+  // Start the AJAX request and log the request details
+  console.log("Sending AJAX request to submit settings...");
   $.ajax({
     data: payload,
     type: 'get',
     url: 'bin/settings',
     success: function (d) {
+      // Log the response data on success
+      console.log("Settings submission successful, response:", d);
       window.history.back();
     },
     error: function (xhr, st, e) {
+      // Log the error details
+      console.error("Error submitting settings. Status:", st, "Error:", e);
       alert(st);
       window.history.back();
     }
   });
 }
+
 
   </script>
   <div data-theme="a" data-role="header">	<a data-role="button" href="javascript:settingsSubmitForm();" data-icon="check" data-iconpos="left" class="ui-btn-right">OK</a>
