@@ -131,9 +131,9 @@ bool Logging::LogZoneEvent(time_t start, int zone, int duration, int schedule, i
 	trace(F("Logging Zone Event: zone %d, schedule %d, duration %d\n"), zone, schedule, duration);
 
 	// Load Zone name
+	FullZone z;
 	const char* zoneName = "Unknown";
 	if (zone > 0 && zone <= NUM_ZONES) {
-		FullZone z;
 		LoadZone(zone - 1, &z);
 		zoneName = z.name;
 		trace(F("Loaded Zone name: %s\n"), zoneName);
