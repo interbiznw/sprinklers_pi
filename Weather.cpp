@@ -56,10 +56,10 @@ int16_t Weather::GetScale(const ReturnVals &vals) const
 	// Targeting a humidity of 55%. If the humidity is less than 55%, increase the adjustment.
 	// If it's above 65%, reduce the adjustment.
 	int humid_factor = 0;
-	if (avgHumidity < 75)
-		humid_factor = (75 - avgHumidity) * 1;  // Add +1% per % below 55
-	else if (avgHumidity > 85)
-		humid_factor = (75 - avgHumidity) / 2;  // Reduce penalty if above 65%
+	if (avgHumidity < 76)
+		humid_factor = (76 - avgHumidity) * 1;  // Add +1% per % below 55
+	else if (avgHumidity > 80)
+		humid_factor = (76 - avgHumidity) / 2;  // Reduce penalty if above 65%
 	humid_factor += humid_bias;  // Apply any EEPROM-stored humidity bias
 
 	// 🌞 Temperature Adjustment:
