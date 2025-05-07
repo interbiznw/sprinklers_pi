@@ -247,6 +247,7 @@ bool SetSettings(const KVPairs & key_value_pairs);
 // Misc
 bool IsFirstBoot();
 void ResetEEPROM();
+void DumpBiasEEPROM();
 int GetNumEnabledZones();
 
 // For storing info related to the Quick Schedule

@@ -937,6 +937,30 @@ void web::ProcessWebClients()
 				else
 					ServeError(pFile);
 			}
+			else if (strcmp(sPage, "debug/dumpbias") == 0)
+			{
+					ServeHeader(pFile, 200, "OK", false, "text/html");
+
+					fprintf(pFile, "<h2>Bias EEPROM Dump</h2>");
+
+					int t1 = EEPROM.read(ADDR_TEMP_BIAS);
+					int t2 = EEPROM.read(ADDR_TEMP_BIAS + 1);
+					int16_t tempBias = GetTempBias();
+
+					int h1 = EEPROM.read(ADDR_HUMIDITY_BIAS);
+					int h2 = EEPROM.read(ADDR_HUMIDITY_BIAS + 1);
+					int16_t humidBias = GetHumidityBias();
+
+					int r1 = EEPROM.read(ADDR_RAIN_BIAS);
+					int r2 = EEPROM.read(ADDR_RAIN_BIAS + 1);
+					int16_t rainBias = GetRainBias();
+
+					fprintf(pFile, "<pre>");
+					fprintf(pFile, "TEMP  Bias @ 0x%04X: %d %d => %d\n", ADDR_TEMP_BIAS, t1, t2, tempBias);
+					fprintf(pFile, "HUMID Bias @ 0x%04X: %d %d => %d\n", ADDR_HUMIDITY_BIAS, h1, h2, humidBias);
+					fprintf(pFile, "RAIN  Bias @ 0x%04X: %d %d => %d\n", ADDR_RAIN_BIAS, r1, r2, rainBias);
+					fprintf(pFile, "</pre>");
+			}
 			else if (strcmp(sPage, "bin/manual") == 0)
 			{
 				if (ManualZone(key_value_pairs))

@@ -761,6 +761,20 @@ void SetRainBias(int16_t bias) {
 	EEPROM.write(ADDR_RAIN_BIAS + 1, (bias >> 8) & 0xFF);
 }
 
+void DumpBiasEEPROM() {
+  trace("📦 Dumping Bias EEPROM Values:\n");
+  trace("TEMP  Bias from EEPROM @ 0x%04X: %d %d => %d\n", ADDR_TEMP_BIAS,
+        EEPROM.read(ADDR_TEMP_BIAS), EEPROM.read(ADDR_TEMP_BIAS + 1),
+        GetTempBias());
+
+  trace("HUMID Bias from EEPROM @ 0x%04X: %d %d => %d\n", ADDR_HUMIDITY_BIAS,
+        EEPROM.read(ADDR_HUMIDITY_BIAS), EEPROM.read(ADDR_HUMIDITY_BIAS + 1),
+        GetHumidityBias());
+
+  trace("RAIN  Bias from EEPROM @ 0x%04X: %d %d => %d\n", ADDR_RAIN_BIAS,
+        EEPROM.read(ADDR_RAIN_BIAS), EEPROM.read(ADDR_RAIN_BIAS + 1),
+        GetRainBias());
+}
 
 
 Schedule quickSchedule;
