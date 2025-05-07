@@ -1,3 +1,9 @@
+# WIP
+Working on WU Re integration
+![image](https://github.com/user-attachments/assets/226e4865-c247-4183-9ab6-1b2a434486c1)
+
+
+
 # sprinklers_pi
 Sprinklers Pi is a sophisticated Irrigation control system for the Raspberry Pi.  The system contains a built in mobile web page server that can be used to configure and monitor the system status from anywhere.  It can also be cross compiled on an AVR/Arduino platform with appropriate networking and storage hardware.
 
