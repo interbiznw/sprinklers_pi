@@ -600,17 +600,17 @@ void GetApiKey(char * key)
     trace(F("DEBUG: GetApiKey returned: %s\n"), key);
 }
 
-static uint8_t toHex(char val)
-{
-	if ((val >= '0') && (val <= '9'))
-		return val - '0';
-	else if ((val >= 'A') && (val <= 'F'))
-		return val - 'A' + 10;
-	else if ((val >= 'a') && (val <= 'f'))
-		return val - 'a' + 10;
-	else
-		return 0;
-}
+//static uint8_t toHex(char val)
+//{
+//	if ((val >= '0') && (val <= '9'))
+//		return val - '0';
+//	else if ((val >= 'A') && (val <= 'F'))
+//		return val - 'A' + 10;
+//	else if ((val >= 'a') && (val <= 'f'))
+//		return val - 'a' + 10;
+//	else
+//		return 0;
+//}
 
 void SetApiKey(const char * key)
 {
