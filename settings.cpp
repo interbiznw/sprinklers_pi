@@ -264,7 +264,7 @@ bool SetSettings(const KVPairs & key_value_pairs)
 	trace("💥 ENTERED SetSettings with %d pairs 💥\n", key_value_pairs.num_pairs);
 
 	for (int i = 0; i < key_value_pairs.num_pairs; i++) {
-		if (!key_value_pairs.keys[i]) {
+		if (key_value_pairs.keys[i][0] == '\0') {
 			trace("⛔ NULL key at index %d — skipping\n", i);
 			continue;
 		}
