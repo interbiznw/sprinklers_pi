@@ -285,7 +285,7 @@ bool SetSettings(const KVPairs & key_value_pairs)
 ////	}
 
 		// <<< ADD THIS printf >>>
-    trace("SetSettings received key: %s, value: %s\n", key, value ? value : "NULL");
+
 		if (strcmp(key, "ip") == 0)
 		{
 			SetIP(decodeIP(value));
@@ -400,7 +400,7 @@ bool SetSettings(const KVPairs & key_value_pairs)
 			}
 			SetRainBias(v);
 	}
-
+	trace("✅ bias_humid = %d, bias_rain = %d (just before returning)\n", GetHumidityBias(), GetRainBias());
 
 
 ////		else
@@ -412,6 +412,7 @@ bool SetSettings(const KVPairs & key_value_pairs)
 ////		}
 
 	}
+	trace("✅ SetSettings finished processing all keys\n");
 	return true;
 }
 
