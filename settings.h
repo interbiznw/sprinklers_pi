@@ -147,7 +147,7 @@ public:
 #ifdef CLOCK_24H
 				sprintf(buff, "%d:%.2d", h, x%60);
 #else
-				sprintf(buff, "%d:%.2d %s",
+				snprintf(buff, sizeof(buff), "%d:%.2d %s",
 						(h%12 == 0 ? 12 : h%12),
 						x%60,
 						(h < 12 ? "AM" : "PM"));
