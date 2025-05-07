@@ -56,10 +56,10 @@ int16_t Weather::GetScale(const ReturnVals &vals) const
 	// Targeting a humidity of 55%. If the humidity is less than 55%, increase the adjustment.
 	// If it's above 65%, reduce the adjustment.
 	int humid_factor = 0;
-	if (avgHumidity < 55)
-		humid_factor = (55 - avgHumidity) * 1;  // Add +1% per % below 55
-	else if (avgHumidity > 65)
-		humid_factor = (55 - avgHumidity) / 2;  // Reduce penalty if above 65%
+	if (avgHumidity < 75)
+		humid_factor = (75 - avgHumidity) * 1;  // Add +1% per % below 55
+	else if (avgHumidity > 85)
+		humid_factor = (75 - avgHumidity) / 2;  // Reduce penalty if above 65%
 	humid_factor += humid_bias;  // Apply any EEPROM-stored humidity bias
 
 	// 🌞 Temperature Adjustment:
@@ -67,10 +67,10 @@ int16_t Weather::GetScale(const ReturnVals &vals) const
 	// Baseline is 70°F, with blended temperature affecting the adjustment.
 	int blendedTemp = (int)((vals.meantempi * 0.7f) + (vals.tempHigh * 0.3f));  // 70% weight to mean, 30% to high
 	int temp_factor = 0;
-	if (blendedTemp > 70)
-		temp_factor = (blendedTemp - 70) * 5;  // +5% for every degree above 70°F
+	if (blendedTemp > 60)
+		temp_factor = (blendedTemp - 60) * 4;  // +5% for every degree above 70°F
 	else
-		temp_factor = (blendedTemp - 70) * 2;  // +2% for every degree below 70°F
+		temp_factor = (blendedTemp - 60) * 2;  // +2% for every degree below 70°F
 	temp_factor += temp_bias;  // Apply any EEPROM-stored temperature bias
 
 	// ☔ Rain Adjustment:
