@@ -120,7 +120,7 @@ function settingsSubmitForm() {
   console.log("Sending AJAX request to submit settings...");
   $.ajax({
     data: payload,
-    type: 'get',
+    type: 'post',
     url: 'bin/settings',
     success: function (d) {
       // Log the response data on success
