@@ -363,44 +363,44 @@ bool SetSettings(const KVPairs & key_value_pairs)
 			trace("Processed key: %s\n", key);
 		}
 
-		else if (strcmp(key, "bias_temp") == 0) {
-			trace("Matched key: bias_temp\n");
+		else if (strcmp(key, "biasTemp") == 0) {
+			trace("Matched key: biasTemp\n");
 			int16_t v = 1;
 			if (value != NULL && strlen(value) > 0) {
 					v = atoi(value);
-					trace("SetSettings(): Writing bias_temp=%d to EEPROM\n", v);
+					trace("SetSettings(): Writing biasTemp=%d to EEPROM\n", v);
 			} else {
-					trace("bias_temp not provided, defaulting to 1\n");
+					trace("biasTemp not provided, defaulting to 1\n");
 			}
 			SetTempBias(v);
 	}
 
-	else if (strcmp(key, "bias_humid") == 0) {
-		trace("Matched key: bias_humid\n");
+	else if (strcmp(key, "biasHumid") == 0) {
+		trace("Matched key: biasHumid\n");
 		int16_t v = 1;
 		if (value != NULL && strlen(value) > 0) {
 			v = atoi(value);
-			trace("Parsed bias_humid = %d\n", v);
+			trace("Parsed biasHumid = %d\n", v);
 		} else {
-			trace("bias_humid not provided, defaulting to 1\n");
+			trace("biasHumid not provided, defaulting to 1\n");
 		}
 		trace("Calling SetHumidityBias(%d)\n", v);  // 🔍 BEFORE
 		SetHumidityBias(v);
 		trace("Returned from SetHumidityBias()\n");  // 🔍 AFTER
 	}
 
-	else if (strcmp(key, "bias_rain") == 0) {
-			trace("Matched key: bias_rain\n");
+	else if (strcmp(key, "biasRain") == 0) {
+			trace("Matched key: biasRain\n");
 			int16_t v = 1;
 			if (value != NULL && strlen(value) > 0) {
 					v = atoi(value);
-					trace("SetSettings(): Writing bias_rain=%d to EEPROM\n", v);
+					trace("SetSettings(): Writing biasRain=%d to EEPROM\n", v);
 			} else {
-					trace("bias_rain not provided, defaulting to 1\n");
+					trace("biasRain not provided, defaulting to 1\n");
 			}
 			SetRainBias(v);
 	}
-	trace("✅ bias_humid = %d, bias_rain = %d (just before returning)\n", GetHumidityBias(), GetRainBias());
+	trace("✅ biasHumid = %d, biasRain = %d (just before returning)\n", GetHumidityBias(), GetRainBias());
 
 
 ////		else
