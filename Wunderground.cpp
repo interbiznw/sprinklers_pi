@@ -85,17 +85,14 @@ Weather::ReturnVals Wunderground::InternalGetVals(const Weather::Settings & sett
 		ret.humid_bias = (int16_t)(EEPROM.read(ADDR_HUMIDITY_BIAS) | (EEPROM.read(ADDR_HUMIDITY_BIAS + 1) << 8));
 		ret.rain_bias = (int16_t)(EEPROM.read(ADDR_RAIN_BIAS) | (EEPROM.read(ADDR_RAIN_BIAS + 1) << 8));
 
-		// Today's data (index 6) — parsed but NOT stored in `ret` as struct has no today_* fields
+		// Today's data (index 6)
 		const Json::Value& today = json["summaries"][6];
 		if (today.isMember("imperial")) {
 			const auto& imp = today["imperial"];
-			if (imp.isMember("tempAvg")) trace("Today's Mean Temp: %d\n", imp["tempAvg"].asInt());
-			if (imp.isMember("precipTotal")) trace("Today's Precip: %.2f\n", imp["precipTotal"].asFloat());
+			if (imp.isMember("tempAvg")) ret.tempAvg = static_cast<int16_t>(imp["tempAvg"].asInt());
+			if (imp.isMember("precipTotal")) ret.precip_today = static_cast<int16_t>(imp["precipTotal"].asFloat() * 100.0f);
 		}
-		if (today.isMember("humidityLow")) trace("Today's Min Humidity: %d\n", today["humidityLow"].asInt());
-		if (today.isMember("humidityHigh")) trace("Today's Max Humidity: %d\n", today["humidityAvg"].asInt());
-		if (today.isMember("uvHigh")) trace("Today's UV: %.1f\n", today["uvHigh"].asFloat());
-
+		if (today.isMember("uvHigh")) ret.today_uv = static_cast<int16_t>(today["uvHigh"].asFloat() * 10.0f);
 	} catch (const std::exception& e) {
 		trace("Error extracting fields: %s\n", e.what());
 		ret.valid = false;
