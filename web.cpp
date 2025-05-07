@@ -322,7 +322,7 @@ static void JSONwCheck(const KVPairs & key_value_pairs, FILE * stream_file)
 	fprintf_P(stream_file, PSTR("\t\"maxhumidity_today\" : \"%d\",\n"), vals.maxhumidity_today);
 	fprintf_P(stream_file, PSTR("\t\"UV\" : \"%d\",\n"), vals.UV);
 	fprintf_P(stream_file, PSTR("\t\"scale\" : \"%d\"\n"), scale);
-	fprintf_P(stream_file, PSTR("\t\"tempBaseline\" : \"%d\",\n"), GetTempBaseline());
+
 	fprintf(stream_file, "}");
 }
 
