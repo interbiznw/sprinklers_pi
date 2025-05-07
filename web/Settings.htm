@@ -72,18 +72,44 @@ $('#settings').on('pagebeforeshow', function () {
 });
 
 
-    function NV(data, e) {
-      if (e in data) {
+function NV(data, e) {
+    // Log the function parameters (data and the current key 'e')
+    console.log("NV function called with data:", data);
+    console.log("Processing key:", e);
+
+    if (e in data) {
+        console.log("Key found in data:", e);
+
+        // Log the action being performed
+        console.log("Displaying the div for:", e);
         $('#settings #'+e+'div').css('display','block');
-        if ((e=='ot') || (e=='wutype')) {
-          $('#'+e+'div input[type="radio"]').prop("checked",false).checkboxradio("refresh");
-          $("#settings #"+e+data[e]).prop("checked", true).checkboxradio("refresh");
-        } else if (e=='sadj')
-          $('#settings #'+e).val(data[e]).slider('refresh');
-        else
-          $('#settings #'+e).val(data[e]);
-      }
+
+        // Handle specific cases for 'ot' and 'wutype'
+        if ((e == 'ot') || (e == 'wutype')) {
+            console.log("Handling radio button for:", e);
+
+            // Uncheck all radio buttons
+            $('#'+e+'div input[type="radio"]').prop("checked", false).checkboxradio("refresh");
+
+            // Check the selected radio button based on data
+            console.log("Selecting radio button:", e + data[e]);
+            $("#settings #"+e+data[e]).prop("checked", true).checkboxradio("refresh");
+        }
+        // Handle the 'sadj' case (slider)
+        else if (e == 'sadj') {
+            console.log("Setting slider value for:", e, "with value:", data[e]);
+            $('#settings #'+e).val(data[e]).slider('refresh');
+        }
+        // Handle generic case for other fields
+        else {
+            console.log("Setting value for:", e, "with value:", data[e]);
+            $('#settings #'+e).val(data[e]);
+        }
+    } else {
+        console.log("Key not found in data:", e);
     }
+}
+
 
     function settingsSubmitForm() {
   const payload = $('#setForm').serialize();
