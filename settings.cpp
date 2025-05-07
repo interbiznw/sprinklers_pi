@@ -414,7 +414,7 @@ bool SetSettings(const KVPairs & key_value_pairs)
 }
 
 
-	trace("✅ biasTemp = %d, biasHumid = %d, biasRain = %d, tempBaseline = %d (just before returning)\n",	GetTempBias(), GetHumidityBias(), GetRainBias(), GetTempBaseline());
+	//trace("✅ biasTemp = %d, biasHumid = %d, biasRain = %d, tempBaseline = %d (just before returning)\n",	GetTempBias(), GetHumidityBias(), GetRainBias(), GetTempBaseline());
 
 
 ////		else
