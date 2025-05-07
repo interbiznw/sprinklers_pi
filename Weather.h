@@ -44,6 +44,9 @@ public:
 		int16_t tempAvg;
 		int16_t tempHigh;
 		int16_t today_uv;
+		short avghumidity_today;
+		short maxhumidity_today;
+		short minhumidity_today;
 	};
 	struct Settings
 	{

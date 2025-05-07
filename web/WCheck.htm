@@ -37,6 +37,9 @@
                         wuText.append("<h3>Today's Values</h3>");
                         wuText.append("Todays Mean Temp: " + data.tempAvg + "&deg;F / " + ((data.tempAvg - 32) * (5 / 9)).toFixed(1) + "&deg;C");
                         wuText.append("<br/>Todays High Temp: " + data.tempHigh + "&deg;F / " + ((data.tempHigh - 32) * (5 / 9)).toFixed(1) + "&deg;C");
+                        wuText.append("<br/>Todays Low humidity: " + data.minhumidity_today + "%");
+                        wuText.append("<br/>Todays Avg Humidity: " + data.avghumidity_today + "%");
+                        wuText.append("<br/>Todays Max Humidity: " + data.maxhumidity_today + "%");
                         wuText.append("<br/>Todays Precipitation: " + data.precip_today / 100 + "\" / " + (data.precip_today * 0.254).toFixed(1) + " mm");
                         wuText.append("<br/>UV: " + data.UV / 10 + " ");
                     }

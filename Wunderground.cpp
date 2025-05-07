@@ -95,6 +95,10 @@ Weather::ReturnVals Wunderground::InternalGetVals(const Weather::Settings & sett
 			if (imp.isMember("precipTotal")) ret.precip_today = static_cast<int16_t>(imp["precipTotal"].asFloat() * 100.0f);
 		}
 		if (today.isMember("uvHigh")) ret.today_uv = static_cast<int16_t>(today["uvHigh"].asFloat() * 10.0f);
+		if (today.isMember("humidityAvg")) ret.avghumidity_today = today["humidityAvg"].asInt();
+		if (today.isMember("humidityHigh")) ret.maxhumidity_today = today["humidityHigh"].asInt();
+		if (today.isMember("humidityLow")) ret.minhumidity_today = today["humidityLow"].asInt();
+
 	} catch (const std::exception& e) {
 		trace("Error extracting fields: %s\n", e.what());
 		ret.valid = false;
