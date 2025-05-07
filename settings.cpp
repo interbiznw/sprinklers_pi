@@ -400,7 +400,21 @@ bool SetSettings(const KVPairs & key_value_pairs)
 			}
 			SetRainBias(v);
 	}
-	trace("✅ biasHumid = %d, biasRain = %d (just before returning)\n", GetHumidityBias(), GetRainBias());
+
+	else if (strcmp(key, "tempBaseline") == 0) {
+		trace("Matched key: tempBaseline\n");
+		int16_t v = 1;
+		if (value != NULL && strlen(value) > 0) {
+				v = atoi(value);
+				trace("SetSettings(): Writing tempBaseline=%d to EEPROM\n", v);
+		} else {
+				trace("tempBaseline not provided, defaulting to 1\n");
+		}
+		SetTempBaseline(v);
+}
+
+
+	trace("✅ biasTemp = %d, biasHumid = %d, biasRain = %d, tempBaseline = %d (just before returning)\n",	GetTempBias(), GetHumidityBias(), GetRainBias(), GetTempBaseline());
 
 
 ////		else
@@ -451,6 +465,7 @@ void ResetEEPROM()
 	SetTempBias(1);
 	SetHumidityBias(1);
 	SetRainBias(1);
+	SetTempBaseline(1);
 }
 
 void SetNumSchedules(const uint8_t iNum)
@@ -762,9 +777,21 @@ void SetRainBias(int16_t bias) {
 	EEPROM.write(ADDR_RAIN_BIAS + 1, (bias >> 8) & 0xFF);
 }
 
+int16_t GetTempBaseline() {
+	int16_t val = (int16_t)(EEPROM.read(ADDR_TEMP_BASELINE) | (EEPROM.read(ADDR_TEMP_BASELINE + 1) << 8));
+	trace("GetTempBaseline(): returning %d from EEPROM\n", val);
+	return val;
+}
+
+void SetTempBaseline(int16_t baseline) {
+	trace("SetTempBaseline(): storing %d into EEPROM\n", baseline);
+	EEPROM.write(ADDR_TEMP_BASELINE, baseline	& 0xFF);
+	EEPROM.write(ADDR_TEMP_BASELINE + 1, (baseline >> 8) & 0xFF);
+}
+
 void DumpBiasEEPROM() {
   trace("📦 Dumping Bias EEPROM Values:\n");
-  trace("TEMP  Bias from EEPROM @ 0x%04X: %d %d => %d\n", ADDR_TEMP_BIAS,
+  trace("TEMP Bias from EEPROM @ 0x%04X: %d %d => %d\n", ADDR_TEMP_BIAS,
         EEPROM.read(ADDR_TEMP_BIAS), EEPROM.read(ADDR_TEMP_BIAS + 1),
         GetTempBias());
 
@@ -772,9 +799,13 @@ void DumpBiasEEPROM() {
         EEPROM.read(ADDR_HUMIDITY_BIAS), EEPROM.read(ADDR_HUMIDITY_BIAS + 1),
         GetHumidityBias());
 
-  trace("RAIN  Bias from EEPROM @ 0x%04X: %d %d => %d\n", ADDR_RAIN_BIAS,
+  trace("RAIN Bias from EEPROM @ 0x%04X: %d %d => %d\n", ADDR_RAIN_BIAS,
         EEPROM.read(ADDR_RAIN_BIAS), EEPROM.read(ADDR_RAIN_BIAS + 1),
         GetRainBias());
+
+	trace("TEMP Baseline from EEPROM @ 0x%04X: %d %d => %d\n", ADDR_TEMP_BASELINE,
+        EEPROM.read(ADDR_TEMP_BASELINE), EEPROM.read(ADDR_TEMP_BASELINE + 1),
+        GetTempBaseline());
 }
 
 

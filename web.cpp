@@ -254,6 +254,8 @@ static void JSONSettings(const KVPairs & key_value_pairs, FILE * stream_file)
 	fprintf_P(stream_file, PSTR("\t\"biasTemp\" : \"%d\",\n"), GetTempBias());
 	fprintf_P(stream_file, PSTR("\t\"biasHumid\" : \"%d\",\n"), GetHumidityBias());
 	fprintf_P(stream_file, PSTR("\t\"biasRain\" : \"%d\",\n"), GetRainBias());
+	fprintf_P(stream_file, PSTR("\t\"tempBaseline\" : \"%d\",\n"), GetTempBaseline());
+
 #endif
 #if defined(WEATHER_AERIS)
 	fprintf_P(stream_file, PSTR("\t\"apiid\" : \"%s\",\n"), settings.apiId);
@@ -320,6 +322,7 @@ static void JSONwCheck(const KVPairs & key_value_pairs, FILE * stream_file)
 	fprintf_P(stream_file, PSTR("\t\"maxhumidity_today\" : \"%d\",\n"), vals.maxhumidity_today);
 	fprintf_P(stream_file, PSTR("\t\"UV\" : \"%d\",\n"), vals.UV);
 	fprintf_P(stream_file, PSTR("\t\"scale\" : \"%d\"\n"), scale);
+	fprintf_P(stream_file, PSTR("\t\"tempBaseline\" : \"%d\",\n"), GetTempBaseline());
 	fprintf(stream_file, "}");
 }
 
@@ -956,10 +959,15 @@ void web::ProcessWebClients()
 					int r2 = EEPROM.read(ADDR_RAIN_BIAS + 1);
 					int16_t rainBias = GetRainBias();
 
+					int b1 = EEPROM.read(ADDR_TEMP_BASELINE);
+					int b2 = EEPROM.read(ADDR_TEMP_BASELINE + 1);
+					int16_t tempBaseline = GetTempBaseline();
+
 					fprintf(pFile, "<pre>");
 					fprintf(pFile, "TEMP  Bias @ 0x%04X: %d %d => %d\n", ADDR_TEMP_BIAS, t1, t2, tempBias);
 					fprintf(pFile, "HUMID Bias @ 0x%04X: %d %d => %d\n", ADDR_HUMIDITY_BIAS, h1, h2, humidBias);
 					fprintf(pFile, "RAIN  Bias @ 0x%04X: %d %d => %d\n", ADDR_RAIN_BIAS, r1, r2, rainBias);
+					fprintf(pFile, "TEMP  Baseline @ 0x%04X: %d %d => %d\n", ADDR_TEMP_BASELINE, b1, b2, tempBaseline);
 					fprintf(pFile, "</pre>");
 			}
 			else if (strcmp(sPage, "bin/manual") == 0)

@@ -43,6 +43,7 @@ $('#settings').on('pagebeforeshow', function () {
             console.log("Bias Temp:", data.biasTemp);
             console.log("Bias Humid:", data.biasHumid);
             console.log("Bias Rain:", data.biasRain);
+            console.log("Temp Baseline:", data.tempBaseline);
 
             // Call NV function with the data
             NV(data, 'ip');
@@ -64,6 +65,7 @@ $('#settings').on('pagebeforeshow', function () {
             NV(data, 'biasTemp');
             NV(data, 'biasHumid');
             NV(data, 'biasRain');
+            NV(data, 'tempBaseline');
         },
         error: function (xhr, status, error) {
             console.error("Error fetching settings:", status, error);  // Log error if the request fails
@@ -219,6 +221,10 @@ function settingsSubmitForm() {
         </fieldset>
       </div>
 
+      <div id="tempBaselinediv" data-role="fieldcontain">
+        <label for="tempBaseline">Temperature Baseline</label>
+        <input name="tempBaseline" id="tempBaseline" size="3" value="70" />
+      </div>
 
       <div id="biasTempdiv" data-role="fieldcontain">
         <label for="biasTemp">Temperature Bias</label>
@@ -234,6 +240,8 @@ function settingsSubmitForm() {
         <label for="biasRain">Rain Bias</label>
         <input name="biasRain" id="biasRain" size="3" value="" />
       </div>
+
+
 
 
 

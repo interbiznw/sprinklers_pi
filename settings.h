@@ -30,6 +30,7 @@
 #define ADDR_TEMP_BIAS      (ADDR_APIKEY + LEN_APIKEY)        // 2050 + 64 = 2114
 #define ADDR_HUMIDITY_BIAS  (ADDR_TEMP_BIAS + 2)              // 2114 + 2 = 2116
 #define ADDR_RAIN_BIAS      (ADDR_HUMIDITY_BIAS + 2)          // 2116 + 2 = 2118
+#define ADDR_TEMP_BASELINE	(ADDR_RAIN_BIAS + 2)              // 2118 + 2 = 2120
 #define ADDR_OTYPE				1008
 #define ADDR_WEB				1009
 #define ADDR_SADJ				1011
@@ -195,6 +196,9 @@ int16_t GetHumidityBias();
 void SetHumidityBias(int16_t bias);
 int16_t GetRainBias();
 void SetRainBias(int16_t bias);
+int16_t GetTempBaseline();
+void SetTempBaseline(int16_t baseline);
+
 void SetNumSchedules(uint8_t iNum);
 uint8_t GetNumSchedules();
 void SetNTPOffset(const int8_t value);
