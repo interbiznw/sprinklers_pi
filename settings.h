@@ -129,7 +129,7 @@ public:
 		if (!IsEnabled()) {
 			return -1;
 		}
-		char buff[10];
+		char buff[16];
 		int h;
 		short x;
 		bool enabled = false;
