@@ -77,13 +77,14 @@ Weather::ReturnVals Wunderground::InternalGetVals(const Weather::Settings & sett
 		}
 
 		if (obs.isMember("humidityLow")) ret.minhumidity = obs["humidityLow"].asInt();
+		if (obs.isMember("humidityAvg")) ret.avghumidity = obs["humidityAvg"].asInt();
 		if (obs.isMember("humidityHigh")) ret.maxhumidity = obs["humidityAvg"].asInt();
 		if (obs.isMember("uvHigh")) ret.UV = static_cast<int16_t>(obs["uvHigh"].asFloat() * 10.0f);
 
 		// Load tuning parameters from EEPROM (stored as int16_t)
-		ret.temp_bias = (int16_t)(EEPROM.read(ADDR_TEMP_BIAS) | (EEPROM.read(ADDR_TEMP_BIAS + 1) << 8));
-		ret.humid_bias = (int16_t)(EEPROM.read(ADDR_HUMIDITY_BIAS) | (EEPROM.read(ADDR_HUMIDITY_BIAS + 1) << 8));
-		ret.rain_bias = (int16_t)(EEPROM.read(ADDR_RAIN_BIAS) | (EEPROM.read(ADDR_RAIN_BIAS + 1) << 8));
+		//ret.temp_bias = (int16_t)(EEPROM.read(ADDR_TEMP_BIAS) | (EEPROM.read(ADDR_TEMP_BIAS + 1) << 8));
+		//ret.humid_bias = (int16_t)(EEPROM.read(ADDR_HUMIDITY_BIAS) | (EEPROM.read(ADDR_HUMIDITY_BIAS + 1) << 8));
+		//ret.rain_bias = (int16_t)(EEPROM.read(ADDR_RAIN_BIAS) | (EEPROM.read(ADDR_RAIN_BIAS + 1) << 8));
 
 		// Today's data (index 6)
 		const Json::Value& today = json["summaries"][6];

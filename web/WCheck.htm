@@ -30,6 +30,7 @@
                         wuText.append("<h3>Yesterday's Values</h3>");
                         wuText.append("Mean Temp: " + data.meantempi + "&deg;F / " + ((data.meantempi - 32) * (5 / 9)).toFixed(1) + "&deg;C");
                         wuText.append("<br/>Min Humidity: " + data.minhumidity + "%");
+                        wuText.append("<br/>Avg Humidity: " + data.avghumidity + "%");
                         wuText.append("<br/>Max Humidity: " + data.maxhumidity + "%");
                         wuText.append("<br/>Precipitation: " + data.precip / 100 + "\" / " + (data.precip * 0.254).toFixed(1) + " mm");
                         wuText.append("<br/>Wind: " + data.wind_mph / 10 + " mph / " + (data.wind_mph * 0.044704).toFixed(1) + " m/s");

@@ -29,6 +29,7 @@ public:
 		const char* resolvedIP;
 		// Yesterday's Values
 		short minhumidity;
+		short avghumidity;
 		short maxhumidity;
 		short meantempi;
 		short precipi;
