@@ -64,7 +64,7 @@ Weather::ReturnVals Wunderground::InternalGetVals(const Weather::Settings & sett
 	}
 
 	try {
-		// Select the 6th day in the summary (index 5 is one day before current)
+		// Yesterday's data (index 5)
 		const Json::Value& obs = json["summaries"][5];
 		ret.valid = true;
 		ret.keynotfound = false;
@@ -72,23 +72,29 @@ Weather::ReturnVals Wunderground::InternalGetVals(const Weather::Settings & sett
 		if (obs.isMember("imperial")) {
 			const auto& imp = obs["imperial"];
 			if (imp.isMember("tempAvg")) ret.meantempi = imp["tempAvg"].asInt();
-			//ret.meantempi = 80; // 🔧 Hardcoded for test
 			if (imp.isMember("precipTotal")) ret.precipi = imp["precipTotal"].asFloat() * 100.0f;
-			//ret.precipi = 20; // 🔧 Hardcoded for test
 			if (imp.isMember("windspeedAvg")) ret.windmph = imp["windspeedAvg"].asFloat() * 10.0f;
 		}
 
 		if (obs.isMember("humidityLow")) ret.minhumidity = obs["humidityLow"].asInt();
-		//ret.minhumidity = 32; // 🔧 Hardcoded for test
 		if (obs.isMember("humidityHigh")) ret.maxhumidity = obs["humidityAvg"].asInt();
-		//ret.maxhumidity = 85; // 🔧 Hardcoded for test
 		if (obs.isMember("uvHigh")) ret.UV = static_cast<int16_t>(obs["uvHigh"].asFloat() * 10.0f);
 
-		// Load tuning parameters from EEPROM (stored as int16_t)
+		// EEPROM bias values
 		ret.temp_bias = (int16_t)(EEPROM.read(1170) | (EEPROM.read(1171) << 8));
 		ret.humid_bias = (int16_t)(EEPROM.read(1172) | (EEPROM.read(1173) << 8));
 		ret.rain_bias = (int16_t)(EEPROM.read(1174) | (EEPROM.read(1175) << 8));
 
+		// Today's data (index 6)
+		const Json::Value& today = json["summaries"][6];
+		if (today.isMember("imperial")) {
+			const auto& imp = today["imperial"];
+			if (imp.isMember("tempAvg")) ret.today_meantempi = imp["tempAvg"].asInt();
+			if (imp.isMember("precipTotal")) ret.today_precipi = imp["precipTotal"].asFloat() * 100.0f;
+		}
+		if (today.isMember("humidityLow")) ret.today_minhumidity = today["humidityLow"].asInt();
+		if (today.isMember("humidityHigh")) ret.today_maxhumidity = today["humidityAvg"].asInt();
+		if (today.isMember("uvHigh")) ret.today_uv = static_cast<int16_t>(today["uvHigh"].asFloat() * 10.0f);
 
 	} catch (const std::exception& e) {
 		trace("Error extracting fields: %s\n", e.what());
@@ -98,6 +104,10 @@ Weather::ReturnVals Wunderground::InternalGetVals(const Weather::Settings & sett
 	trace("Parsed WU: Temp=%d, MinHum=%d, MaxHum=%d, Precip=%.2f, Wind=%.2f, UV=%.1f\n",
 		ret.meantempi, ret.minhumidity, ret.maxhumidity,
 		ret.precipi / 100.0f, ret.windmph / 10.0f, ret.UV / 10.0f);
+
+	trace("Today WU: Temp=%d, MinHum=%d, MaxHum=%d, Precip=%.2f, UV=%.1f\n",
+		ret.today_meantempi, ret.today_minhumidity, ret.today_maxhumidity,
+		ret.today_precipi / 100.0f, ret.today_uv / 10.0f);
 
 	char* ip;
 	curl_easy_getinfo(curl, CURLINFO_PRIMARY_IP, &ip);
